@@ -1,0 +1,68 @@
+﻿@model ICollection<ListingDTO>
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<h1>Listings</h1>
+
+<table class="table" cellpadding="1" cellspacing="1">
+    <thead>
+        <tr>
+            <td>Listings</td>
+           <td>
+               Description
+            </td>
+            <td>
+               Condition
+            </td>
+            <td>
+                Quantity
+            </td>
+            <td>
+               Customer
+            </td>
+            <td>
+                Store
+            </td>
+                        <td>
+                View Details
+            </td>
+                        <td>
+                Claimed By
+            </td>
+
+        </tr>
+    </thead>
+    <tbody>
+    @foreach(ListingDTO l in Model) {
+        <tr>
+<td>
+                @l.ListingID
+            </td>
+            <td>
+                @l.Description
+            </td>
+            <td>
+                @l.Condition
+            </td>
+            <td>
+                @l.Quantity
+            </td>
+            <td>
+                @l.Customer
+            </td>
+            <td>
+                @l.Store
+            </td>
+                        <td>
+                View Details
+            </td>
+                        <td>
+                <a asp-action="Claim_Unclaim" asp-route-id="@l.ListingID">@l.Customer</a>
+            </td>
+
+        </tr>
+
+    }
+    </tbody>
+</table>
