@@ -8,7 +8,7 @@ namespace Lab8.Models
     public class Listing
     {
         public int ListingID { get; set; }
-        public int CustomerID { get; set; }
+        public int? CustomerID { get; set; }
         public int StoreID { get; set; } 
         public int ConditionID { get; set; } 
 

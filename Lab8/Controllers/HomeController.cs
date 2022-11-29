@@ -80,15 +80,12 @@ namespace Lab8.Controllers
 .FirstOrDefaultAsync(l => l.FirstName == "Ethan");
                     var entity = await _context.Listings
                         .FirstOrDefaultAsync(l => l.ListingID == id);
-                    if (entity is null)
+                    if (entity is null )
                     {
                         //actual_customer will be replaced by actually customer id later
                         entity.CustomerID = actual_customer.CustomerID;
-                    }
-                    else
-                    {
-
-                        entity.CustomerID = null_customer.CustomerID;
+                    } else { 
+                        entity.Customer = null;
                     }
                     await _context.SaveChangesAsync();
 
