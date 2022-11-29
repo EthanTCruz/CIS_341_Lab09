@@ -14,7 +14,7 @@ namespace Lab8.Controllers
         private readonly CommunityStoreContext _context;
 
         private readonly UserManager<ApplicationUser> _userManager;
-        public CustomerController(CommunityStoreContext context)
+        public CustomerController(CommunityStoreContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
             _userManager = userManager;
@@ -57,6 +57,7 @@ namespace Lab8.Controllers
             List<ListingDTO> listDTOs = new();
             foreach (Listing l in listings)
             {
+                if (l.CustomerID.Equals(userId)) { 
                 ListingDTO listingDTO = new()
                 {
                     ListingID = l.ListingID,
@@ -68,6 +69,7 @@ namespace Lab8.Controllers
                 };
 
                 listDTOs.Add(listingDTO);
+                }
             }
 
             return View(listDTOs);

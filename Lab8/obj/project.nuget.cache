@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "K6HupJEltu4d7C1Z63/hEVe++iY28IiQhJGvQxlqeD/FDL1RvgmElCv7FrbK3VnVequNAEZGp4Nqim6EvXWpyQ==",
+  "dgSpecHash": "hQOycKA3BZvE7wYyG+YvvPKeB857RhAC+mnGQNAf2RMcvNPA6P0gs0IGHtUuSgXwANbogQryyZOy5KMHH/TtYQ==",
   "success": true,
-  "projectFilePath": "C:\\Users\\ecruz981\\Downloads\\Lab8\\Lab8\\Lab8\\Lab8.csproj",
+  "projectFilePath": "C:\\Users\\ecruz981\\Downloads\\Lab8\\Lab8\\Lab8\\Lab8\\Lab8.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\ecruz981\\.nuget\\packages\\humanizer.core\\2.8.26\\humanizer.core.2.8.26.nupkg.sha512",
     "C:\\Users\\ecruz981\\.nuget\\packages\\messagepack\\2.1.152\\messagepack.2.1.152.nupkg.sha512",
