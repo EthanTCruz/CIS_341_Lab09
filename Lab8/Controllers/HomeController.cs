@@ -94,7 +94,7 @@ namespace Lab8.Controllers
 .FirstOrDefaultAsync(l => l.Email == user.Email);
                     var entity = await _context.Listings
                         .FirstOrDefaultAsync(l => l.ListingID == id);
-                    if (entity.Customer is null)
+                    if (entity.CustomerID is null)
                     {
                         
                         entity.Customer = actual_customer;
