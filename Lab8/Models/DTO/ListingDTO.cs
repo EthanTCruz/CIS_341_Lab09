@@ -6,6 +6,8 @@ namespace Lab8.Models.DTO
     {
         [DisplayName("ListingID")]
         public int ListingID { get; set; }
+
+
         [DisplayName("StoreID")]
         public int StoreID { get; set; }
         [DisplayName("Condition")]

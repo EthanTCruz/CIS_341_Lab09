@@ -19,6 +19,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
+using Lab8.Data;
+using Lab8.Models;
 
 namespace Lab8.Areas.Identity.Pages.Account
 {
@@ -30,13 +32,15 @@ namespace Lab8.Areas.Identity.Pages.Account
         private readonly IUserEmailStore<ApplicationUser> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
+        private readonly CommunityStoreContext _context;
 
         public RegisterModel(
             UserManager<ApplicationUser> userManager,
             IUserStore<ApplicationUser> userStore,
             SignInManager<ApplicationUser> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender, 
+            CommunityStoreContext context)
         {
             _userManager = userManager;
             _userStore = userStore;
@@ -44,6 +48,7 @@ namespace Lab8.Areas.Identity.Pages.Account
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
+            _context = context;
         }
 
         /// <summary>
@@ -121,6 +126,18 @@ namespace Lab8.Areas.Identity.Pages.Account
 
                 if (result.Succeeded)
                 {
+                    var customer = new Customer
+                    {
+                        FirstName = Input.Email,
+                        LastName = Input.Email,
+                        Email = Input.Email,
+                        Password = Input.Email
+                    };
+
+
+                    _context.Customers.Add(customer);
+                    _context.SaveChanges();
+
                     _logger.LogInformation("User created a new account with password.");
 
                     var userId = await _userManager.GetUserIdAsync(user);
@@ -167,6 +184,9 @@ namespace Lab8.Areas.Identity.Pages.Account
                     $"Ensure that '{nameof(ApplicationUser)}' is not an abstract class and has a parameterless constructor, or alternatively " +
                     $"override the register page in /Areas/Identity/Pages/Account/Register.cshtml");
             }
+
+
+
         }
 
         private IUserEmailStore<ApplicationUser> GetEmailStore()

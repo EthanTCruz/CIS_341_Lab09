@@ -55,12 +55,17 @@ namespace Lab8.Controllers
             List<ListingDTO> listDTOs = new();
             foreach (Listing l in listings)
             {
-                ListingDTO listingDTO = new()
+                string customerName = "Unclaimed" ;
+                if (l.CustomerID != null)
+                {
+                    customerName = l.Customer.FirstName;
+                }
+                    ListingDTO listingDTO = new()
                 {
                     ListingID = l.ListingID,
                     Quantity = l.Quantity,
                     Description = l.Description,
-                    Customer = l.Customer.FirstName + " " + l.Customer.LastName,
+                    Customer = customerName,
                     Store = l.Store.Name,
                     Condition = l.Condition.Description
                 };
@@ -81,17 +86,23 @@ namespace Lab8.Controllers
             {
                 try
                 {
+                    Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
+
+                    var user = await GetCurrentUserAsync();
 
                     var actual_customer = await _context.Customers
-.FirstOrDefaultAsync(l => l.FirstName == "Ethan");
+.FirstOrDefaultAsync(l => l.Email == user.Email);
                     var entity = await _context.Listings
                         .FirstOrDefaultAsync(l => l.ListingID == id);
-                    if (entity is null )
+                    if (entity.Customer is null)
                     {
-                        //actual_customer will be replaced by actually customer id later
-                        entity.CustomerID = actual_customer.CustomerID;
-                    } else { 
-                        entity.Customer = null;
+                        
+                        entity.Customer = actual_customer;
+                    } else {
+                        if (entity.Customer == actual_customer)
+                        {
+                            entity.Customer = null;
+                        }
                     }
                     await _context.SaveChangesAsync();
 

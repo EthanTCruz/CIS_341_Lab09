@@ -24,7 +24,7 @@ namespace Lab8.Data
 
 
             context.Customers.Add(customer);
-
+            context.SaveChanges();
             var store = new Store
             {
                 Name = "Target",
@@ -41,9 +41,10 @@ namespace Lab8.Data
             };
 
             context.Conditions.Add(condition);
-
+            context.SaveChanges();
             var listing = new Listing
             {
+                PostedBy = customer,
                 Condition = condition,
                 Customer = customer,
                 Store = store,
@@ -99,8 +100,9 @@ namespace Lab8.Data
 
             var listing2 = new Listing
             {
+                PostedBy = customer2,
                 Condition = condition2,
-                Customer = customer2,
+                Customer = customer,
                 Store = store2,
                 Quantity = 2,
                 Description = "Chair"

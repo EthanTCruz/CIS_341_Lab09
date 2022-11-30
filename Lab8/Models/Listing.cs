@@ -8,6 +8,7 @@ namespace Lab8.Models
     public class Listing
     {
         public int ListingID { get; set; }
+        public int PostedByID { get; set; }
         public int? CustomerID { get; set; }
         public int StoreID { get; set; } 
         public int ConditionID { get; set; } 
@@ -19,9 +20,10 @@ namespace Lab8.Models
         public int Quantity { get; set; }
 
 
-
+        [DisplayName("PostedBy")]
+        public Customer PostedBy { get; set; }
         [DisplayName("Customer")]
-        public Customer Customer { get; set; }
+        public Customer? Customer { get; set; }
         [DisplayName("Store")]
         public Store Store { get; set; }
         [DisplayName("Condition")]
