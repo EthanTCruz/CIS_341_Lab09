@@ -16,6 +16,5 @@ namespace Lab8.Models
         public string Password { get; set; }
 
 
-        public ICollection<Listing> CustomerListings { get; set; }
     }
 }

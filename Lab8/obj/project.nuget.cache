@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "neHRQXBXRXWSmKDbSpmxTMGbWKKh571I6XX5xWFpw13piA2e+V+29TCqL/01MAWGfhcJgaOXYQ41xAjMfSykLA==",
+  "dgSpecHash": "CWm81v6camkuzQGA1PxcsBY35ouj0m3bNDsM0gSC4UvOvpYfoIx3gsBETPBYvqJtoHLWeBG6X7gGJe23bIuLiQ==",
   "success": true,
   "projectFilePath": "C:\\Users\\ecruz981\\git\\CIS_341_Lab09\\Lab8\\Lab8.csproj",
   "expectedPackageFiles": [
@@ -37,11 +37,11 @@
     "C:\\Users\\ecruz981\\.nuget\\packages\\microsoft.data.sqlclient.sni.runtime\\2.1.1\\microsoft.data.sqlclient.sni.runtime.2.1.1.nupkg.sha512",
     "C:\\Users\\ecruz981\\.nuget\\packages\\microsoft.diasymreader\\1.3.0\\microsoft.diasymreader.1.3.0.nupkg.sha512",
     "C:\\Users\\ecruz981\\.nuget\\packages\\microsoft.dotnet.scaffolding.shared\\6.0.10\\microsoft.dotnet.scaffolding.shared.6.0.10.nupkg.sha512",
-    "C:\\Users\\ecruz981\\.nuget\\packages\\microsoft.entityframeworkcore\\6.0.10\\microsoft.entityframeworkcore.6.0.10.nupkg.sha512",
-    "C:\\Users\\ecruz981\\.nuget\\packages\\microsoft.entityframeworkcore.abstractions\\6.0.10\\microsoft.entityframeworkcore.abstractions.6.0.10.nupkg.sha512",
-    "C:\\Users\\ecruz981\\.nuget\\packages\\microsoft.entityframeworkcore.analyzers\\6.0.10\\microsoft.entityframeworkcore.analyzers.6.0.10.nupkg.sha512",
+    "C:\\Users\\ecruz981\\.nuget\\packages\\microsoft.entityframeworkcore\\6.0.11\\microsoft.entityframeworkcore.6.0.11.nupkg.sha512",
+    "C:\\Users\\ecruz981\\.nuget\\packages\\microsoft.entityframeworkcore.abstractions\\6.0.11\\microsoft.entityframeworkcore.abstractions.6.0.11.nupkg.sha512",
+    "C:\\Users\\ecruz981\\.nuget\\packages\\microsoft.entityframeworkcore.analyzers\\6.0.11\\microsoft.entityframeworkcore.analyzers.6.0.11.nupkg.sha512",
     "C:\\Users\\ecruz981\\.nuget\\packages\\microsoft.entityframeworkcore.design\\6.0.10\\microsoft.entityframeworkcore.design.6.0.10.nupkg.sha512",
-    "C:\\Users\\ecruz981\\.nuget\\packages\\microsoft.entityframeworkcore.relational\\6.0.10\\microsoft.entityframeworkcore.relational.6.0.10.nupkg.sha512",
+    "C:\\Users\\ecruz981\\.nuget\\packages\\microsoft.entityframeworkcore.relational\\6.0.11\\microsoft.entityframeworkcore.relational.6.0.11.nupkg.sha512",
     "C:\\Users\\ecruz981\\.nuget\\packages\\microsoft.entityframeworkcore.sqlserver\\6.0.10\\microsoft.entityframeworkcore.sqlserver.6.0.10.nupkg.sha512",
     "C:\\Users\\ecruz981\\.nuget\\packages\\microsoft.entityframeworkcore.tools\\6.0.10\\microsoft.entityframeworkcore.tools.6.0.10.nupkg.sha512",
     "C:\\Users\\ecruz981\\.nuget\\packages\\microsoft.extensions.caching.abstractions\\6.0.0\\microsoft.extensions.caching.abstractions.6.0.0.nupkg.sha512",
