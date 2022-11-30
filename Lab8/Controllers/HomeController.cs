@@ -1,7 +1,9 @@
-﻿using Lab8.Data;
+﻿using Lab8.Areas.Identity.Data;
+using Lab8.Data;
 using Lab8.Models;
 using Lab8.Models.DTO;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
@@ -11,9 +13,13 @@ namespace Lab8.Controllers
     public class HomeController : Controller
     {
         private readonly CommunityStoreContext _context;
-        public HomeController(CommunityStoreContext context)
+        private readonly UserManager<ApplicationUser> _userManager;
+
+        public HomeController(CommunityStoreContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
+
         }
 
 
