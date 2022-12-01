@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Moq;
 using System.Diagnostics;
 
 namespace Lab8.Controllers
@@ -14,15 +15,19 @@ namespace Lab8.Controllers
     {
         private readonly CommunityStoreContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
+        private Mock<CommunityStoreContext> context;
 
-        public HomeController(CommunityStoreContext context, UserManager<ApplicationUser> userManager)
+        public HomeController(CommunityStoreContext context)
         {
             _context = context;
-            _userManager = userManager;
+
 
         }
 
-
+        public HomeController(Mock<CommunityStoreContext> context)
+        {
+            this.context = context;
+        }
 
         public IActionResult Privacy()
         {
