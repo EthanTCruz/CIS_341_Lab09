@@ -6,20 +6,21 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Moq;
 using System.Diagnostics;
 
 namespace Lab8.Controllers
 {
+
     public class HomeController : Controller
     {
         private readonly CommunityStoreContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
-        private Mock<CommunityStoreContext> context;
 
-        public HomeController(CommunityStoreContext context)
+
+        public HomeController(CommunityStoreContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
 
 
         }
@@ -39,7 +40,7 @@ namespace Lab8.Controllers
 
 
 
-        [AllowAnonymous]
+        [Authorize]
         public async Task<IActionResult> Index()
         {
             List<Listing> listings = await _context.Listings

@@ -10,7 +10,7 @@ namespace Lab8.Areas.Identity.Data;
 public class ApplicationUser : IdentityUser
 {
 
-    public int CustomerID;
+
 }
 
 

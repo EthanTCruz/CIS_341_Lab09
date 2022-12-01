@@ -4,6 +4,8 @@ using Lab8.Areas.Identity.Data;
 using Microsoft.AspNetCore.Authorization;
 using Lab8.Data;
 
+//EntityFrameworkCore\Update-Database -Context "AuthenticationContext"
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<CommunityStoreContext>(options =>

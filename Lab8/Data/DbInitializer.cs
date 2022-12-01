@@ -46,7 +46,7 @@ namespace Lab8.Data
             {
                 PostedBy = customer,
                 Condition = condition,
-                CustomerID = customer.CustomerID,
+                CustomerID = null,
                 Store = store,
                 Quantity = 1,
                 Description = "Table"
