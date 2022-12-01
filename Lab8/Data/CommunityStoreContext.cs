@@ -5,6 +5,7 @@ namespace Lab8.Data
 {
     public class CommunityStoreContext : DbContext
     {
+        public CommunityStoreContext() { }
         public CommunityStoreContext(DbContextOptions<CommunityStoreContext> options) : base(options)
         {
         }

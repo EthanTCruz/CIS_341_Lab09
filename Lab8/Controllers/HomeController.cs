@@ -24,10 +24,6 @@ namespace Lab8.Controllers
 
         }
 
-        public HomeController(Mock<CommunityStoreContext> context)
-        {
-            this.context = context;
-        }
 
         public IActionResult Privacy()
         {

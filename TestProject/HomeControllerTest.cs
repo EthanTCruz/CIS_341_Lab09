@@ -5,7 +5,7 @@ using Lab8.Data;
 using Microsoft.AspNetCore.Identity;
 using Moq;
 using System;
-using System.Web.Mvc;
+using Microsoft.AspNetCore.Mvc;
 
 namespace TestProject
 {
@@ -13,24 +13,24 @@ namespace TestProject
     {
         private readonly Mock<CommunityStoreContext> _context;
         private readonly Mock<AuthenticationContext> _userManager;
-        private readonly HomeController _controller;
+
 
         public HomeControllerTest()
         {
             _context = new Mock<CommunityStoreContext>();
             _userManager = new Mock<AuthenticationContext>();
-            _controller = new HomeController(_context);
+
         }
 
         [Fact]
         public void IndexReturnsViewResult()
         {
             // Arrange
-            var controller = new HomeController(_context);
+            var controller = new HomeController(_context.Object);
             // Act
-            var result = _controller.Index();
+            var result = controller.Index();
 
-            // Assert
+
             Assert.IsType<ViewResult>(result);
 
         }
@@ -39,34 +39,23 @@ namespace TestProject
         public void PrivacyReturnsViewPrivacy()
         {
             // Arrange
-            var controller = new HomeController(_context);
+            var controller = new HomeController(_context.Object);
             // Act
-            var result = _controller.Privacy();
+            var result = controller.Privacy();
 
             // Assert
             Assert.IsType<ViewResult>(result);
 
         }
 
-        [Fact]
-        public void ErrorReturnsViewError()
-        {
-            // Arrange
-            var controller = new HomeController(_context);
-            // Act
-            var result = _controller.Error();
-
-            // Assert
-            Assert.IsType<ViewResult>(result);
-
-        }
 
         [Fact]
         public void Claim_UnclaimWorks()
         {
-
+            // Arrange
+            var controller = new HomeController(_context.Object);
             // Act
-            var result = _controller.Index();
+            var result = controller.Index();
 
             // Assert
             Assert.IsType<ViewResult>(result);

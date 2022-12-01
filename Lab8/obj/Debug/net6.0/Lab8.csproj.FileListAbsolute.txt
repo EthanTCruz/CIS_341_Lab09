@@ -1111,3 +1111,5 @@ C:\Users\ethan\git\lab09\CIS_341_Lab09\Lab8\obj\Debug\net6.0\refint\Lab8.dll
 C:\Users\ethan\git\lab09\CIS_341_Lab09\Lab8\obj\Debug\net6.0\Lab8.pdb
 C:\Users\ethan\git\lab09\CIS_341_Lab09\Lab8\obj\Debug\net6.0\Lab8.genruntimeconfig.cache
 C:\Users\ethan\git\lab09\CIS_341_Lab09\Lab8\obj\Debug\net6.0\ref\Lab8.dll
+C:\Users\ecruz981\git\CIS_341_Lab09\Lab8\bin\Debug\net6.0\Castle.Core.dll
+C:\Users\ecruz981\git\CIS_341_Lab09\Lab8\bin\Debug\net6.0\Moq.dll
