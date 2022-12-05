@@ -13,7 +13,5 @@ namespace Lab8.Models
         public string Email { get; set; }
 
 
-        public ICollection<Listing> CustomerListings { get; set; }
-
     }
 }

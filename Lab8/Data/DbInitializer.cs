@@ -35,6 +35,7 @@ namespace Lab8.Data
             };
             context.Conditions.Add(condition);
 
+
             var type = new Models.Type
             {
                 Name = "Furniture",
@@ -43,19 +44,22 @@ namespace Lab8.Data
             };
             context.Types.Add(type);
 
+            //get rid of manager id once figured how to make it pk
             var manager = new Manager
             {
-                Name = "Manager1",
+                Name = "ManagerPerson",
                 Email = "Manager@gmail.com"
             };
             context.Managers.Add(manager);
-
+            
             var store = new Store
             {
                 Name = "Target",
-                Address = "1234 fake st"
+                Manager = manager,
+
             };
             context.Stores.Add(store);
+
             var status = new Status
             {
                 Description = "Unclaimed"
