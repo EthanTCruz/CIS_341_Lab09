@@ -26,5 +26,6 @@ namespace Lab8.Models.DTO
         [DisplayName("Store Name")]
         public string Store { get; set; } = string.Empty;
 
+        public ICollection<Listing> Listings { get; set; }
     }
 }
