@@ -8,10 +8,14 @@ namespace Lab8.Models
     public class Listing
     {
         public int ListingID { get; set; }
-        public int PostedByID { get; set; }
-        public int? CustomerID { get; set; }
+        public int CreatedByID { get; set; }
+        public int? ClaimedByID { get; set; }
         public int StoreID { get; set; } 
         public int ConditionID { get; set; } 
+
+        public int TypeID { get; set; }
+
+        public int StatusID { get; set; }
 
         
         [DisplayName("Description")]
@@ -20,10 +24,14 @@ namespace Lab8.Models
         public int Quantity { get; set; }
 
 
-        [DisplayName("PostedBy")]
-        public Customer PostedBy { get; set; }
-        [DisplayName("Customer")]
-        public Customer? Customer { get; set; }
+        [DisplayName("Status")]
+        public Status Status { get; set; }
+        [DisplayName("Type")]
+        public Type Type { get; set; }
+        [DisplayName("CreatedBy")]
+        public Customer CreatedBy { get; set; }
+        [DisplayName("ClaimedBy")]
+        public Customer? ClaimedBy { get; set; }
         [DisplayName("Store")]
         public Store Store { get; set; }
         [DisplayName("Condition")]

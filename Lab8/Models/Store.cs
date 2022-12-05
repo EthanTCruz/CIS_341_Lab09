@@ -9,7 +9,12 @@ namespace Lab8.Models
         [DisplayName("Name")]
         public string Name { get; set; }
         [DisplayName("Address")]
-        public string Address { get; set; } 
+        public string Address { get; set; }
+        [DisplayName("ManagerID")]
+        public string ManagerID { get; set; }
+
+        [DisplayName("Manager")]
+        public Manager Manager { get; set; }
 
         public ICollection<Listing> StoreListings { get; set; }
     }

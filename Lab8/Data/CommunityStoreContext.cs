@@ -12,6 +12,9 @@ namespace Lab8.Data
 
         public DbSet<Condition> Conditions { get; set; }
         public DbSet<Customer> Customers { get; set; }
+        public DbSet<Manager> Managers { get; set; }
+        public DbSet<Models.Type> Types { get; set; }
+        public DbSet<Status> Status { get; set; }
         public DbSet<Listing> Listings { get; set; }
         public DbSet<Store> Stores { get; set; }
     }

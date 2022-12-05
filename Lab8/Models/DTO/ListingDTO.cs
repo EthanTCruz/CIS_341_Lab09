@@ -18,9 +18,11 @@ namespace Lab8.Models.DTO
         public int Quantity { get; set; }
 
 
-  
-        [DisplayName("Customer")]
-        public string Customer { get; set; } = "Unclaimed";
+        [DisplayName("CreatedBy")]
+        public string CreatedBy { get; set; }
+
+        [DisplayName("ClaimedBy")]
+        public string ClaimedBy { get; set; } = "Unclaimed";
         [DisplayName("Store Name")]
         public string Store { get; set; } = string.Empty;
 

@@ -48,22 +48,24 @@ namespace Lab8.Controllers
                 .Include(listing => listing.Store)
                 .ToListAsync();
 
+            //unecessary?
             foreach (Listing listing in listings)
             {
 
-                await _context.Entry(listing).Reference(l => l.Customer).LoadAsync();
+                await _context.Entry(listing).Reference(l => l.CreatedBy).LoadAsync();
             }
 
             List<ListingDTO> listDTOs = new();
             foreach (Listing l in listings)
             {
-                if (l.CustomerID.Equals(userId)) { 
+                if (l.ClaimedBy.Email.Equals(user.Email)) { 
                 ListingDTO listingDTO = new()
                 {
                     ListingID = l.ListingID,
                     Quantity = l.Quantity,
                     Description = l.Description,
-                    Customer = l.Customer.FirstName + " " + l.Customer.LastName,
+                    CreatedBy = l.CreatedBy.Name,
+                    ClaimedBy = l.ClaimedBy.Name,
                     Store = l.Store.Name,
                     Condition = l.Condition.Description
                 };

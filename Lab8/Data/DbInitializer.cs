@@ -1,4 +1,5 @@
 ﻿using Lab8.Models;
+using System.Reflection.Metadata.Ecma335;
 
 namespace Lab8.Data
 {
@@ -8,110 +9,73 @@ namespace Lab8.Data
         {
             context.Database.EnsureCreated();
 
-            if(context.Listings.Any())
+            if (context.Listings.Any())
             {
                 return;
             }
-
-
-            var customer = new Customer
+            var createdby = new Customer
             {
-                FirstName = "Customer",
-                LastName = "Person",
-                Email = "Customer@gmail.com",
-                Password = "Customer" 
+                Name = "Creating Customer",
+                Email = "Creatore@gmail.com"
             };
+            context.Customers.Add(createdby);
 
-
-            context.Customers.Add(customer);
-            context.SaveChanges();
-            var store = new Store
+            var claimedby = new Customer
             {
-                Name = "Target",
-                Address = "500 Division St"
+                Name = "Customer Person",
+                Email = "Customer@gmail.com"
+
             };
+            context.Customers.Add(claimedby);
 
-            context.Stores.Add(store);
-
-    
 
             var condition = new Condition
             {
-                Description = "Used"
+                Description = "Good"
             };
-
             context.Conditions.Add(condition);
-            context.SaveChanges();
+
+            var type = new Models.Type
+            {
+                Name = "Furniture",
+                Description = "Chair"
+
+            };
+            context.Types.Add(type);
+
+            var manager = new Manager
+            {
+                Name = "Manager1",
+                Email = "Manager@gmail.com"
+            };
+            context.Managers.Add(manager);
+
+            var store = new Store
+            {
+                Name = "Target",
+                Address = "1234 fake st"
+            };
+            context.Stores.Add(store);
+            var status = new Status
+            {
+                Description = "Unclaimed"
+            };
+            context.Status.Add(status);
+
             var listing = new Listing
             {
-                PostedBy = customer,
-                Condition = condition,
-                CustomerID = null,
+                Description = "Nice wooden chair",
                 Store = store,
+                Condition = condition,
+                Type = type,
                 Quantity = 1,
-                Description = "Table"
+                ClaimedBy = claimedby,
+                CreatedBy = createdby,
+                Status = status
             };
-
-
             context.Listings.Add(listing);
-
             context.SaveChanges();
 
-
-            var customer2 = new Customer
-            {
-                FirstName = "Ethan",
-                LastName = "Cruz",
-                Email = "ecruz@uwsp.edu",
-                Password = "password" 
-            };
-
-
-            context.Customers.Add(customer2);
-
-
-            var customer3 = new Customer
-            {
-
-                FirstName = "Null",
-                LastName = "Null",
-                Email = "Null@gmail.com",
-                Password = "Null"
-            };
-
-
-            context.Customers.Add(customer3);
-            context.SaveChanges();
-
-            var store2 = new Store
-            {
-                Name = "Walmart",
-                Address = "200 4th St"
-            };
-
-            context.Stores.Add(store2);
-
-            var condition2 = new Condition
-            {
-                Description = "New"
-            };
-
-            context.Conditions.Add(condition2);
-
-            var listing2 = new Listing
-            {
-                PostedBy = customer2,
-                Condition = condition2,
-                CustomerID = customer.CustomerID,
-                Store = store2,
-                Quantity = 2,
-                Description = "Chair"
-            };
-
-
-            context.Listings.Add(listing2);
-
-            context.SaveChanges();
         }
-    }
+        }
 }

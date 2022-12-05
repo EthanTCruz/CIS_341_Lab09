@@ -128,10 +128,8 @@ namespace Lab8.Areas.Identity.Pages.Account
                 {
                     var customer = new Customer
                     {
-                        FirstName = Input.Email,
-                        LastName = Input.Email,
+                        Name = Input.Email,
                         Email = Input.Email,
-                        Password = Input.Email
                     };
 
 

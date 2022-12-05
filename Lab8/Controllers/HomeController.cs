@@ -51,26 +51,27 @@ namespace Lab8.Controllers
             foreach (Listing listing in listings)
             {
 
-                await _context.Entry(listing).Reference(l => l.Customer).LoadAsync();
+                await _context.Entry(listing).Reference(l => l.CreatedBy).LoadAsync();
             }
 
             List<ListingDTO> listDTOs = new();
             foreach (Listing l in listings)
             {
                 string customerName = "Unclaimed" ;
-                if (l.CustomerID != null)
+                if (l.ClaimedByID != null)
                 {
-                    customerName = l.Customer.FirstName;
+                    customerName = l.ClaimedBy.Name;
                 }
                     ListingDTO listingDTO = new()
                 {
-                    ListingID = l.ListingID,
-                    Quantity = l.Quantity,
-                    Description = l.Description,
-                    Customer = customerName,
-                    Store = l.Store.Name,
-                    Condition = l.Condition.Description
-                };
+                        ListingID = l.ListingID,
+                        Quantity = l.Quantity,
+                        Description = l.Description,
+                        CreatedBy = l.CreatedBy.Name,
+                        ClaimedBy = l.ClaimedBy.Name,
+                        Store = l.Store.Name,
+                        Condition = l.Condition.Description
+                    };
                 listDTOs.Add(listingDTO);
             }
 
@@ -96,14 +97,14 @@ namespace Lab8.Controllers
 .FirstOrDefaultAsync(l => l.Email == user.Email);
                     var entity = await _context.Listings
                         .FirstOrDefaultAsync(l => l.ListingID == id);
-                    if (entity.CustomerID is null)
+                    if (entity.ClaimedByID is null)
                     {
                         
-                        entity.Customer = actual_customer;
+                        entity.ClaimedBy = actual_customer;
                     } else {
-                        if (entity.Customer == actual_customer)
+                        if (entity.ClaimedBy == actual_customer)
                         {
-                            entity.Customer = null;
+                            entity.ClaimedBy = null;
                         }
                     }
                     await _context.SaveChangesAsync();
