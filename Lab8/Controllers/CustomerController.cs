@@ -46,7 +46,7 @@ namespace Lab8.Controllers
             foreach (Listing l in listings)
             {
                 string customerName = "Unclaimed";
-                if (l.ClaimedByID != null)
+                if (l.ClaimedBy != null)
                 {
                     customerName = l.ClaimedBy.Name;
                 }

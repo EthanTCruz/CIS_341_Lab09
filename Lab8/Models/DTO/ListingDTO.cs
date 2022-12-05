@@ -22,7 +22,7 @@ namespace Lab8.Models.DTO
         public string CreatedBy { get; set; }
 
         [DisplayName("ClaimedBy")]
-        public string ClaimedBy { get; set; } = "Unclaimed";
+        public string? ClaimedBy { get; set; } = "Unclaimed";
         [DisplayName("Store Name")]
         public string Store { get; set; } = string.Empty;
 
