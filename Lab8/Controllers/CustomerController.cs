@@ -56,7 +56,7 @@ namespace Lab8.Controllers
                     Quantity = l.Quantity,
                     Description = l.Description,
                     CreatedBy = l.CreatedBy.Name,
-                    ClaimedBy = l.ClaimedBy.Name,
+                    ClaimedBy = customerName,
                     Store = l.Store.Name,
                     Condition = l.Condition.Description
                 };
@@ -85,7 +85,7 @@ namespace Lab8.Controllers
 .FirstOrDefaultAsync(l => l.Email == user.Email);
                     var entity = await _context.Listings
                         .FirstOrDefaultAsync(l => l.ListingID == id);
-                    if (entity.ClaimedByID is null)
+                    if (entity.ClaimedBy is null)
                     {
 
                         entity.ClaimedBy = actual_customer;
@@ -111,9 +111,9 @@ namespace Lab8.Controllers
                         throw;
                     }
                 }
-                return Redirect("/Home/Index");
+                return Redirect("/Customer/Index");
             }
-            return Redirect("/Home/Index");
+            return Redirect("/Customer/Index");
         }
 
 

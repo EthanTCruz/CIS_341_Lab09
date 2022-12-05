@@ -57,8 +57,8 @@ namespace Lab8.Controllers
             List<ListingDTO> listDTOs = new();
             foreach (Listing l in listings)
             {
-                string customerName = "Unclaimed" ;
-                if (l.ClaimedByID != null)
+                string customerName = "Unclaimed";
+                if (l.ClaimedBy != null)
                 {
                     customerName = l.ClaimedBy.Name;
                 }
@@ -68,7 +68,7 @@ namespace Lab8.Controllers
                         Quantity = l.Quantity,
                         Description = l.Description,
                         CreatedBy = l.CreatedBy.Name,
-                        ClaimedBy = l.ClaimedBy.Name,
+                        ClaimedBy = customerName,
                         Store = l.Store.Name,
                         Condition = l.Condition.Description
                     };
