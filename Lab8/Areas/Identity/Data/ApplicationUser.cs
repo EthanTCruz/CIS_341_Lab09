@@ -11,9 +11,7 @@ namespace Lab8.Areas.Identity.Data;
 public class ApplicationUser : IdentityUser
 {
 
-    [PersonalData]
-    [Column(TypeName = "nvarchar(50")]
-    public string UserName { get; set; }
+
     public string Email { get; set; }
 
 }

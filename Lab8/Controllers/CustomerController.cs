@@ -26,7 +26,28 @@ namespace Lab8.Controllers
             return View();
         }
 
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (id == null || _context.Listings == null)
+            {
+                return NotFound();
+            }
 
+            var listing = await _context.Listings
+                .Include(l => l.ClaimedBy)
+                .Include(l => l.Condition)
+                .Include(l => l.CreatedBy)
+                .Include(l => l.Status)
+                .Include(l => l.Store)
+                .Include(l => l.Type)
+                .FirstOrDefaultAsync(m => m.ListingID == id);
+            if (listing == null)
+            {
+                return NotFound();
+            }
+
+            return View(listing);
+        }
 
         [Authorize]
         public async Task<IActionResult> Index()
@@ -47,7 +68,7 @@ namespace Lab8.Controllers
             foreach (Listing l in listings)
             {
                 string customerName = "Unclaimed";
-                if (l.ClaimedBy != null)
+                if (l.ClaimedByID != null)
                 {
                     customerName = l.ClaimedBy.Name;
                 }
@@ -86,7 +107,7 @@ namespace Lab8.Controllers
 .FirstOrDefaultAsync(l => l.Email == user.Email);
                     var entity = await _context.Listings
                         .FirstOrDefaultAsync(l => l.ListingID == id);
-                    if (entity.ClaimedBy is null)
+                    if (entity.ClaimedByID is null)
                     {
 
                         entity.ClaimedBy = actual_customer;
@@ -119,7 +140,7 @@ namespace Lab8.Controllers
 
 
         [Authorize]
-        public async Task<IActionResult> ViewCreatedListings()
+        public async Task<IActionResult> ViewSubmittedListings()
         {
             Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
             
@@ -131,6 +152,7 @@ namespace Lab8.Controllers
             List<Listing> listings = await _context.Listings
                 .Include(listing => listing.Condition)
                 .Include(listing => listing.Store)
+                .Where(Listing=>Listing.CreatedBy.Email==user.Email)
                 .ToListAsync();
 
             //unecessary?

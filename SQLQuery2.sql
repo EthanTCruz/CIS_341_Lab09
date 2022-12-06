@@ -1,1 +1,1 @@
-﻿select * from Customers
+﻿select * from Listings

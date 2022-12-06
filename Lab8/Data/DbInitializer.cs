@@ -80,6 +80,83 @@ namespace Lab8.Data
             context.Listings.Add(listing);
             context.SaveChanges();
 
+
+            var condition2 = new Condition
+            {
+                Description = "Good"
+            };
+            context.Conditions.Add(condition2);
+
+
+            var type2 = new Models.Type
+            {
+                Name = "Furniture",
+                Description = "Chair"
+
+            };
+            context.Types.Add(type2);
+
+
+
+
+
+
+            var status2 = new Status
+            {
+                Description = "Unapproved"
+            };
+            context.Status.Add(status2);
+            var listing2 = new Listing
+            {
+                Description = "Nice wooden chair",
+                Store = store,
+                Condition = condition2,
+                Type = type2,
+                Quantity = 1,
+                CreatedBy = claimedby,
+                Status = status2
+            };
+            context.Listings.Add(listing2);
+
+            context.SaveChanges();
+
+            var condition3 = new Condition
+            {
+                Description = "Good"
+            };
+            context.Conditions.Add(condition3);
+
+
+            var type3 = new Models.Type
+            {
+                Name = "Furniture",
+                Description = "Chair"
+
+            };
+            context.Types.Add(type);
+
+
+
+
+            var status3 = new Status
+            {
+                Description = "Unapproved"
+            };
+            context.Status.Add(status3);
+
+            var listing3 = new Listing
+            {
+                Description = "Another Nice wooden chair",
+                Store = store,
+                Condition = condition3,
+                Type = type3,
+                Quantity = 1,
+                CreatedBy = claimedby,
+                Status = status3
+            };
+            context.Listings.Add(listing3);
+
+            context.SaveChanges();
         }
         }
 }

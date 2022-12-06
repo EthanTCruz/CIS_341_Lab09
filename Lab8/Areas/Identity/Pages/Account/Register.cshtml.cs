@@ -85,10 +85,7 @@ namespace Lab8.Areas.Identity.Pages.Account
             [Display(Name = "Email")]
             public string Email { get; set; }
 
-            [Required]
-            [DataType(DataType.Text)]
-            [Display(Name = "UserName")]
-            public string UserName { get; set; }
+
 
 
 
@@ -126,8 +123,8 @@ namespace Lab8.Areas.Identity.Pages.Account
             if (ModelState.IsValid)
             {
                 //var user = CreateUser();
-                var user = new ApplicationUser { UserName = Input.UserName, Email = Input.Email };
-                await _userStore.SetUserNameAsync(user, Input.UserName, CancellationToken.None);
+                var user = new ApplicationUser { Email = Input.Email };
+                await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
                 var result = await _userManager.CreateAsync(user, Input.Password);
 
@@ -135,7 +132,7 @@ namespace Lab8.Areas.Identity.Pages.Account
                 {
                     var customer = new Customer
                     {
-                        Name = Input.UserName,
+                        Name = Input.Email,
                         Email = Input.Email,
                     };
 

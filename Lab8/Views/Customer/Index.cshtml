@@ -51,7 +51,7 @@
                 @l.Store
             </td>
                         <td>
-                View Details
+                <a asp-action="Details" asp-route-id="@l.ListingID">Details</a>
             </td>
                         <td>
                 <a asp-action="Claim_Unclaim" asp-route-id="@l.ListingID">@l.ClaimedBy</a>
