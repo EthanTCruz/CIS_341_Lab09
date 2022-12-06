@@ -6,8 +6,8 @@ namespace Lab8.Models
     {
         [DisplayName("Customer ID")]
         public int CustomerID { get; set; }
-        [DisplayName("First Name")]
-        public string Name { get; set; } = "None";
+        [DisplayName("Name")]
+        public string Name { get; set; }
 
         [DisplayName("Email")]
         public string Email { get; set; }

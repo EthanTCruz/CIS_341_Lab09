@@ -62,7 +62,7 @@ namespace Lab8.Data
 
             var status = new Status
             {
-                Description = "Unclaimed"
+                Description = "Unapproved"
             };
             context.Status.Add(status);
 

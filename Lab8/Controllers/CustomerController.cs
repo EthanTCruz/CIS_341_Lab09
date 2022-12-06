@@ -34,6 +34,7 @@ namespace Lab8.Controllers
             List<Listing> listings = await _context.Listings
                 .Include(listing => listing.Condition)
                 .Include(listing => listing.Store)
+                .Include(listing => listing.ClaimedBy)
                 .ToListAsync();
 
             foreach (Listing listing in listings)
@@ -70,7 +71,7 @@ namespace Lab8.Controllers
 
         [Authorize]
         [HttpGet]
-        public async Task<IActionResult> Claim_Unclaim(int id, [Bind("ListingID")] ListingDTO listing)
+        public async Task<IActionResult> Claim_Unclaim(int id)
         {
 
             if (ModelState.IsValid)
@@ -111,9 +112,9 @@ namespace Lab8.Controllers
                         throw;
                     }
                 }
-                return Redirect("/Customer/Index");
+                return RedirectToAction(nameof(Index));
             }
-            return Redirect("/Customer/Index");
+            return RedirectToAction(nameof(Index));
         }
 
 
