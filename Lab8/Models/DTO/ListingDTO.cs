@@ -35,7 +35,14 @@ namespace Lab8.Models.DTO
             Quantity = l.Quantity;
             Condition = l.Condition.Description;
             CreatedBy = l.CreatedBy.Name;
-            ClaimedBy = l.ClaimedBy.Name;
+            if (l.ClaimedBy is null)
+            {
+                ClaimedBy = "Unclaimed";
+            }
+            else
+            {
+                ClaimedBy = l.ClaimedBy.Name;
+            }
             Store = l.Store.Name;
 
         }

@@ -81,17 +81,71 @@ using (var scope = app.Services.CreateScope())
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
+    app.UseSwagger();
+    app.UseSwaggerUI();
     app.UseExceptionHandler("/Home/Error");
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
 app.UseHttpsRedirection();
-app.MapGet("/todoitems", async (CommunityStoreContext context) =>
+app.MapGet("/listings", async (CommunityStoreContext context) =>
 {
-    return await context.Listings.Select(t => new ListingDTO(t)).ToListAsync();
+    return await context.Listings.Include(l => l.ClaimedBy)
+                .Include(l => l.Condition)
+                .Include(l => l.CreatedBy)
+                .Include(l => l.Status)
+                .Include(l => l.Store)
+                .Include(l => l.Type).Select(t => new ListingDTO(t)).ToListAsync();
 })
     .Produces<List<ListingDTO>>(StatusCodes.Status200OK);
+
+app.MapGet("/listings/{id}", async (int id, CommunityStoreContext context) =>
+{
+    var result = await context.Listings.Include(l => l.Condition)
+                .Include(l => l.CreatedBy)
+                .Include(l => l.Status)
+                .Include(l => l.Store)
+                .Include(l => l.Type).Where(t => t.ListingID == id).FirstOrDefaultAsync();
+    if (result != null)
+    {
+        var resultVal = new ListingDTO(result);
+
+        // Equivalent to returning Task<OkResult>
+        return Results.Ok(resultVal);
+    }
+    else
+    {
+        return Results.NotFound($"404 Not Found, Listing with the ID of {id} was not found.");
+    }
+})
+    .Produces<ListingDTO>(StatusCodes.Status200OK)
+    .Produces(StatusCodes.Status404NotFound);
+
+app.MapDelete("/listings/{id}", async (int id, CommunityStoreContext context) =>
+{
+    var result = await context.Listings.Include(l => l.CreatedBy)
+                .Include(l => l.CreatedBy)
+                .Include(l => l.Condition)
+                .Include(l => l.Status)
+                .Include(l => l.Store)
+                .Include(l => l.Type).Where(t => t.ListingID == id).FirstOrDefaultAsync();
+    if (result != null)
+    {
+        var resultVal = new ListingDTO(result);
+        context.Listings.Remove(result);
+        await context.SaveChangesAsync();
+        return Results.Ok(resultVal);
+    }
+    else
+    {
+        return Results.NotFound($"Listings with the ID of {id} was not found.");
+    }
+})
+    .Produces<ListingDTO>(StatusCodes.Status200OK)
+    .Produces(StatusCodes.Status404NotFound);
+
+
 
 app.UseStaticFiles();
 
