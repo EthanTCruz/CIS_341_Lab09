@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
+﻿using Lab8.Models.DTO;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Newtonsoft.Json;
 using System.ComponentModel;
 using static System.Formats.Asn1.AsnWriter;
 
@@ -10,14 +12,14 @@ namespace Lab8.Models
         public int ListingID { get; set; }
         public int CreatedByID { get; set; }
         public int? ClaimedByID { get; set; }
-        public int StoreID { get; set; } 
-        public int ConditionID { get; set; } 
+        public int StoreID { get; set; }
+        public int ConditionID { get; set; }
 
         public int TypeID { get; set; }
 
         public int StatusID { get; set; }
 
-        
+
         [DisplayName("Description")]
         public string Description { get; set; }
         [DisplayName("Quantity")]
@@ -36,5 +38,7 @@ namespace Lab8.Models
         public Store Store { get; set; }
         [DisplayName("Condition")]
         public Condition Condition { get; set; }
+
+
     }
 }

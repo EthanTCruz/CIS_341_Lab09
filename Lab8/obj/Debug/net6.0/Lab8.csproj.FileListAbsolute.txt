@@ -281,3 +281,15 @@ C:\Users\ecruz981\git\CIS_341_Lab09\Lab8\obj\Debug\net6.0\refint\Lab8.dll
 C:\Users\ecruz981\git\CIS_341_Lab09\Lab8\obj\Debug\net6.0\Lab8.pdb
 C:\Users\ecruz981\git\CIS_341_Lab09\Lab8\obj\Debug\net6.0\Lab8.genruntimeconfig.cache
 C:\Users\ecruz981\git\CIS_341_Lab09\Lab8\obj\Debug\net6.0\ref\Lab8.dll
+C:\Users\ethan\git\CIS_341_Lab09\Lab8\obj\Debug\net6.0\Lab8.csproj.AssemblyReference.cache
+C:\Users\ethan\git\CIS_341_Lab09\Lab8\obj\Debug\net6.0\Lab8.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\ethan\git\CIS_341_Lab09\Lab8\obj\Debug\net6.0\Lab8.AssemblyInfoInputs.cache
+C:\Users\ethan\git\CIS_341_Lab09\Lab8\obj\Debug\net6.0\Lab8.AssemblyInfo.cs
+C:\Users\ethan\git\CIS_341_Lab09\Lab8\obj\Debug\net6.0\Lab8.csproj.CoreCompileInputs.cache
+C:\Users\ethan\git\CIS_341_Lab09\Lab8\obj\Debug\net6.0\Lab8.MvcApplicationPartsAssemblyInfo.cs
+C:\Users\ethan\git\CIS_341_Lab09\Lab8\obj\Debug\net6.0\Lab8.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\ethan\git\CIS_341_Lab09\Lab8\obj\Debug\net6.0\Lab8.RazorAssemblyInfo.cache
+C:\Users\ethan\git\CIS_341_Lab09\Lab8\obj\Debug\net6.0\Lab8.RazorAssemblyInfo.cs
+C:\Users\ethan\git\CIS_341_Lab09\Lab8\obj\Debug\net6.0\Lab8.dll
+C:\Users\ethan\git\CIS_341_Lab09\Lab8\obj\Debug\net6.0\refint\Lab8.dll
+C:\Users\ethan\git\CIS_341_Lab09\Lab8\obj\Debug\net6.0\Lab8.pdb

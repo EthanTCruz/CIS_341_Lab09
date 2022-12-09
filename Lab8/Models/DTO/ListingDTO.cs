@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Text.Json.Serialization;
 
 namespace Lab8.Models.DTO
 {
@@ -25,6 +26,22 @@ namespace Lab8.Models.DTO
         public string? ClaimedBy { get; set; }
         [DisplayName("Store Name")]
         public string Store { get; set; } = string.Empty;
+
+        public ListingDTO(Listing l)
+        {
+            Description = l.Description;
+            ListingID = l.ListingID;
+            StoreID = l.StoreID;
+            Quantity = l.Quantity;
+            Condition = l.Condition.Description;
+            CreatedBy = l.CreatedBy.Name;
+            ClaimedBy = l.ClaimedBy.Name;
+            Store = l.Store.Name;
+
+        }
+
+        [JsonConstructor]
+        public ListingDTO() { }
 
         public ICollection<Listing> Listings { get; set; }
     }

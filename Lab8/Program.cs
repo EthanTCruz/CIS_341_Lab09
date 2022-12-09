@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using Lab8.Areas.Identity.Data;
 using Microsoft.AspNetCore.Authorization;
 using Lab8.Data;
+using System.Reflection;
+using Lab8.Models.DTO;
 
 //EntityFrameworkCore\Update-Database -Context "AuthenticationContext"
 
@@ -22,7 +24,13 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.R
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new() { Title = "CommunityStoreApi", Version = "v1" });
+    // Required to include XML comments generated during the build process.
+    c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, $"{Assembly.GetExecutingAssembly().GetName().Name}.xml"));
+});
 
 // Modify authentication options. You can also change the user, signin and lockout settings.
 builder.Services.Configure<IdentityOptions>(options =>
@@ -79,6 +87,12 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.MapGet("/todoitems", async (CommunityStoreContext context) =>
+{
+    return await context.Listings.Select(t => new ListingDTO(t)).ToListAsync();
+})
+    .Produces<List<ListingDTO>>(StatusCodes.Status200OK);
+
 app.UseStaticFiles();
 
 app.UseRouting();
