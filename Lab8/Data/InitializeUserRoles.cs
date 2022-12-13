@@ -26,7 +26,7 @@ namespace Lab8.Data
         private static async Task<string> EnsureUser(IServiceProvider serviceProvider, string userPw, string UserName)
         {
             // Access the UserManager service
-            var userManager = serviceProvider.GetService<UserManager<IdentityUser>>();
+            var userManager = serviceProvider.GetService<UserManager<ApplicationUser>>();
             if (userManager != null)
             {
                 // Find user by email address
@@ -34,7 +34,7 @@ namespace Lab8.Data
                 if (user == null)
                 {
                     // Create new user if none exists
-                    user = new IdentityUser { UserName = UserName };
+                    user = new ApplicationUser { UserName = UserName };
                     await userManager.CreateAsync(user, userPw);
                 }
 
@@ -63,7 +63,7 @@ namespace Lab8.Data
                 }
 
                 // Retrieve user with the provided ID and add to the specified role
-                var userManager = serviceProvider.GetService<UserManager<IdentityUser>>();
+                var userManager = serviceProvider.GetService<UserManager<ApplicationUser>>();
                 if (userManager != null)
                 {
                     var user = await userManager.FindByIdAsync(uid);

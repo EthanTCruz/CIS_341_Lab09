@@ -17,10 +17,14 @@ builder.Services.AddDbContext<AuthenticationContext>(options =>
     options.UseSqlServer(connectionString));
 
 builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
-    .AddEntityFrameworkStores<AuthenticationContext>();
+    .AddRoles<IdentityRole>()
+    .AddEntityFrameworkStores<AuthenticationContext>()
+    .AddUserManager<UserManager<ApplicationUser>>();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+
 
 
 
@@ -32,6 +36,28 @@ builder.Services.Configure<IdentityOptions>(options =>
 });
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    var context = services.GetRequiredService<AuthenticationContext>();
+
+
+    context.Database.Migrate();
+
+    try
+    {
+
+
+        InitializeUsersRoles.Initialize(services).Wait();
+    }
+    catch (Exception ex)
+    {
+        // Something went wrong
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex.Message, "An error occurred seeding the users and roles.");
+    }
+}
 
 using (var scope = app.Services.CreateScope())
 {
@@ -50,25 +76,7 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
-using (var scope = app.Services.CreateScope())
-{
-    var services = scope.ServiceProvider;
-    var context = services.GetRequiredService<AuthenticationContext>();
 
-    context.Database.Migrate();
-
-    try
-    {
-
-        InitializeUsersRoles.Initialize(services).Wait();
-    }
-    catch (Exception ex)
-    {
-        // Something went wrong
-        var logger = services.GetRequiredService<ILogger<Program>>();
-        logger.LogError(ex.Message, "An error occurred seeding the users and roles.");
-    }
-}
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
