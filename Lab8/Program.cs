@@ -39,6 +39,23 @@ var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
 {
+    // Service provider for the scope
+    var services = scope.ServiceProvider;
+    try
+    {
+        // Get the DbContext from the service provider
+        var context = services.GetRequiredService<CommunityStoreContext>();
+        DbInitializer.Initialize(context);
+    }
+    catch (Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "An error occurred creating the DB.");
+    }
+}
+
+using (var scope = app.Services.CreateScope())
+{
     var services = scope.ServiceProvider;
     var context = services.GetRequiredService<AuthenticationContext>();
 
@@ -59,22 +76,7 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
-using (var scope = app.Services.CreateScope())
-{
-    // Service provider for the scope
-    var services = scope.ServiceProvider;
-    try
-    {
-        // Get the DbContext from the service provider
-        var context = services.GetRequiredService<CommunityStoreContext>();
-        DbInitializer.Initialize(context);
-    }
-    catch (Exception ex)
-    {
-        var logger = services.GetRequiredService<ILogger<Program>>();
-        logger.LogError(ex, "An error occurred creating the DB.");
-    }
-}
+
 
 
 

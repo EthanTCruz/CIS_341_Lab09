@@ -21,6 +21,7 @@ using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using Lab8.Data;
 using Lab8.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Lab8.Areas.Identity.Pages.Account
 {
@@ -126,19 +127,33 @@ namespace Lab8.Areas.Identity.Pages.Account
                 var user = new ApplicationUser { Email = Input.Email };
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
-                var result = await _userManager.CreateAsync(user, Input.Password);
-
-                if (result.Succeeded)
+                
+                var entity = await _context.Managers
+.FirstOrDefaultAsync(l => l.Email == Input.Email);
+                if (entity is null)
                 {
+
                     var customer = new Customer
                     {
                         Name = Input.Email,
                         Email = Input.Email,
                     };
-
-
                     _context.Customers.Add(customer);
                     _context.SaveChanges();
+
+                } else
+                {
+                    ModelState.AddModelError(string.Empty, "User is already a manager");
+                    return Page();
+                }
+                var result = await _userManager.CreateAsync(user, Input.Password);
+
+                if (result.Succeeded)
+                {
+
+
+
+
 
                     _logger.LogInformation("User created a new account with password.");
 

@@ -1,6 +1,7 @@
 ﻿using Lab8.Areas.Identity.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Lab8.Models;
 
 namespace Lab8.Data
 {
@@ -27,6 +28,7 @@ namespace Lab8.Data
         {
             // Access the UserManager service
             var userManager = serviceProvider.GetService<UserManager<ApplicationUser>>();
+            var storeManager = serviceProvider.GetService<CommunityStoreContext>();
             if (userManager != null)
             {
                 // Find user by email address
@@ -34,7 +36,10 @@ namespace Lab8.Data
                 if (user == null)
                 {
                     // Create new user if none exists
-                    user = new ApplicationUser { UserName = UserName };
+                    user = new ApplicationUser { UserName = UserName, Email=UserName };
+                    var manager = new Manager { Name=user.Email,Email = user.Email };
+                    storeManager.Managers.Add(manager);
+                    storeManager.SaveChanges();
                     await userManager.CreateAsync(user, userPw);
                 }
 
