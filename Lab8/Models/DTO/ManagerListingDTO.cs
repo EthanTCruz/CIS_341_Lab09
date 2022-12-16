@@ -2,8 +2,9 @@
 
 namespace Lab8.Models.DTO
 {
-    public class ListingDTO
+    public class ManagerListingDTO
     {
+
         [DisplayName("ListingID")]
         public int ListingID { get; set; }
 
@@ -21,13 +22,13 @@ namespace Lab8.Models.DTO
         [DisplayName("CreatedBy")]
         public string CreatedBy { get; set; }
 
-        [DisplayName("ClaimedBy")]
-        public string? ClaimedBy { get; set; }
         [DisplayName("Store Name")]
         public string Store { get; set; } = string.Empty;
 
         [DisplayName("Status")]
+        public string Status { get; set; } = string.Empty;
 
         public ICollection<Listing> Listings { get; set; }
+
     }
 }

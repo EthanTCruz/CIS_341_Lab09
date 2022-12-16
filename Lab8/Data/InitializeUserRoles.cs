@@ -7,19 +7,16 @@ namespace Lab8.Data
 {
     public class InitializeUsersRoles
     {
-        private readonly static string AdministratorRole = "Admin";
-        private readonly static string SuperUserRole = "SuperUser";
+        private readonly static string ManagerRole = "Manager";
         private readonly static string Password = "M0kkul4999.";
 
         public static async Task Initialize(IServiceProvider serviceProvider)
         {
             using (var context = new AuthenticationContext(serviceProvider.GetRequiredService<DbContextOptions<AuthenticationContext>>()))
             {
-                var adminID = await EnsureUser(serviceProvider, Password, "admin@tomiheimonen.info");
-                await EnsureRole(serviceProvider, adminID, AdministratorRole);
+                var ManagerID = await EnsureUser(serviceProvider, Password, "manager@tomiheimonen.info");
+                await EnsureRole(serviceProvider, ManagerID, ManagerRole);
 
-                var superuserID = await EnsureUser(serviceProvider, Password, "superuser@tomiheimonen.info");
-                await EnsureRole(serviceProvider, superuserID, SuperUserRole);
             }
         }
 

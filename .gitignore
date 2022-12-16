@@ -6,3 +6,9 @@
 ./lab8/obj/
 Lab8/obj/
 Lab8/bin/
+/Lab8/obj/
+/Lab8/bin/
+/Lab8/obj
+/Lab8/bin
+/bin/
+/obj/
