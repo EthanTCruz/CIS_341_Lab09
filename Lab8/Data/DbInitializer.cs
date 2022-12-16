@@ -133,7 +133,7 @@ namespace Lab8.Data
                 Description = "Chair"
 
             };
-            context.Types.Add(type);
+            context.Types.Add(type3);
 
 
 

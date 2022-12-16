@@ -32,6 +32,7 @@ namespace Lab8.Controllers
                            .Include(listing => listing.Condition)
                            .Include(listing => listing.Store)
                            .Include(listing => listing.ClaimedBy)
+                           .Include(listing => listing.Status)
                            .ToListAsync();
 
             foreach (Listing listing in listings)
@@ -58,6 +59,53 @@ namespace Lab8.Controllers
 
             return View(listDTOs);
         }
+
+        [Authorize(Roles = "Manager")]
+        [HttpGet]
+        public async Task<IActionResult> Approve_Unapprove(int id)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
+
+                    var user = await GetCurrentUserAsync();
+
+                    var entity = await _context.Listings
+                        .Where(predicate: l => l.Store.Manager.Email == user.Email)
+                        .FirstOrDefaultAsync(l => l.ListingID == id);
+
+                    if (entity != null)
+                    {
+
+                    if (entity.Status.Description == "Unapproved")
+                    {
+                        entity.Status.Description = "Approved";
+                    }
+                    else
+                    {
+                        entity.Status.Description = "Unapproved";
+                    }
+                    await _context.SaveChangesAsync();
+                }
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!_context.Listings.Any(e => e.ListingID == id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            return RedirectToAction(nameof(Index));
+        }
+
 
         // GET: ManagerController/Details/5
         public ActionResult Details(int id)
