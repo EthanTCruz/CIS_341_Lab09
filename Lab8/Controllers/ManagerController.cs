@@ -65,19 +65,35 @@ namespace Lab8.Controllers
         // GET: Manager/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null || _context.ListingDTO == null)
+            if (id == null || _context.Listings == null)
             {
                 return NotFound();
             }
 
-            var ListingDTO = await _context.ListingDTO
+            var listing = await _context.Listings
+                .Include(listing => listing.Condition)
+                .Include(listing => listing.Store)
+                .Include(listing => listing.CreatedBy)
+                .Include(listing => listing.ClaimedBy)
+                .Include(listing => listing.Status)
                 .FirstOrDefaultAsync(m => m.ListingID == id);
-            if (ListingDTO == null)
+            if (listing == null)
             {
                 return NotFound();
             }
 
-            return View(ListingDTO);
+            ListingDTO listingDTO = new()
+            {
+                ListingID = listing.ListingID,
+                Quantity = listing.Quantity,
+                Description = listing.Description,
+                CreatedBy = listing.CreatedBy.Name,
+                Status = listing.Status.Description,
+                Store = listing.Store.Name,
+                Condition = listing.Condition.Description
+            };
+
+            return View(listingDTO);
         }
 
 
@@ -86,47 +102,6 @@ namespace Lab8.Controllers
 
 
 
-        // GET: Manager/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null || _context.ListingDTO == null)
-            {
-                return NotFound();
-            }
-
-            var ListingDTO = await _context.ListingDTO
-                .FirstOrDefaultAsync(m => m.ListingID == id);
-            if (ListingDTO == null)
-            {
-                return NotFound();
-            }
-
-            return View(ListingDTO);
-        }
-
-        // POST: Manager/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            if (_context.ListingDTO == null)
-            {
-                return Problem("Entity set 'CommunityStoreContext.ListingDTO'  is null.");
-            }
-            var ListingDTO = await _context.ListingDTO.FindAsync(id);
-            if (ListingDTO != null)
-            {
-                _context.ListingDTO.Remove(ListingDTO);
-            }
-            
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-        private bool ListingDTOExists(int id)
-        {
-          return _context.ListingDTO.Any(e => e.ListingID == id);
-        }
 
         [Authorize(Roles = "Manager")]
         [HttpGet]
@@ -142,6 +117,7 @@ namespace Lab8.Controllers
 
                     var entity = await _context.Listings
                         .Where(predicate: l => l.Store.Manager.Email == user.Email)
+                        .Include(listing => listing.Status)
                         .FirstOrDefaultAsync(l => l.ListingID == id);
 
                     if (entity != null)

@@ -5,7 +5,6 @@ namespace Lab8.Models.DTO
 {
     public class ListingDTO
     {
-        [Key]
         [DisplayName("ListingID")]
         public int ListingID { get; set; }
 
