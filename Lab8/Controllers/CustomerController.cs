@@ -138,6 +138,21 @@ namespace Lab8.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        // POST: Manager/Create
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create([Bind("ListingID,StoreID,Condition,Description,Quantity,CreatedBy,Store,Status")] ListingDTO ListingDTO)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Add(ListingDTO);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            return View(ListingDTO);
+        }
 
         [Authorize]
         public async Task<IActionResult> ViewSubmittedListings()

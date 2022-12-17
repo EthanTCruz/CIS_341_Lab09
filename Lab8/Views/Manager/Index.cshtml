@@ -1,70 +1,72 @@
-﻿@model ICollection<ManagerListingDTO>
+﻿@model IEnumerable<Lab8.Models.DTO.ListingDTO>
+
 @{
-    ViewData["Title"] = "Manager Home Page";
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Listings</h1>
+<h1>Index</h1>
 
-<table class="table" cellpadding="1" cellspacing="1">
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
     <thead>
         <tr>
-            <td>Listings</td>
-           <td>
-               Description
-            </td>
-            <td>
-               Condition
-            </td>
-            <td>
-                Quantity
-            </td>
-
-            <td>
-                Store
-            </td>
-                        <td>
-                View Details
-            </td>
-                        <td>
-                Created By
-            </td>
-            <td>
-                Status
-            </td>
-
+            <th>
+                @Html.DisplayNameFor(model => model.StoreID)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Condition)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Description)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Quantity)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CreatedBy)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Store)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Status)
+            </th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
-    @foreach(ManagerListingDTO l in Model) {
+@foreach (var item in Model) {
         <tr>
-<td>
-                @l.ListingID
+            <td>
+                @Html.DisplayFor(modelItem => item.StoreID)
             </td>
             <td>
-                @l.Description
+                @Html.DisplayFor(modelItem => item.Condition)
             </td>
             <td>
-                @l.Condition
+                @Html.DisplayFor(modelItem => item.Description)
             </td>
             <td>
-                @l.Quantity
+                @Html.DisplayFor(modelItem => item.Quantity)
             </td>
-
             <td>
-                @l.Store
+                @Html.DisplayFor(modelItem => item.CreatedBy)
             </td>
-                        <td>
-                View Details
+            <td>
+                @Html.DisplayFor(modelItem => item.Store)
             </td>
-                <td>
-                    @l.CreatedBy
-                </td>
-                        <td>
-                <a asp-action="Approve_Unapprove" asp-route-id="@l.ListingID">@l.Status</a>
+            <td>
+                <a asp-action="Claim_Unclaim" asp-route-id="@item.ListingID">@Html.DisplayFor(modelItem => item.Status)</a>
             </td>
-
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.ListingID">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.ListingID">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.ListingID">Delete</a>
+            </td>
         </tr>
-
-    }
+}
     </tbody>
 </table>

@@ -14,7 +14,7 @@ namespace Lab8.Data
         {
             using (var context = new AuthenticationContext(serviceProvider.GetRequiredService<DbContextOptions<AuthenticationContext>>()))
             {
-                var ManagerID = await EnsureUser(serviceProvider, Password, "manager@tomiheimonen.info");
+                var ManagerID = await EnsureUser(serviceProvider, Password, "manager@gmail.com");
                 await EnsureRole(serviceProvider, ManagerID, ManagerRole);
 
             }
@@ -25,7 +25,6 @@ namespace Lab8.Data
         {
             // Access the UserManager service
             var userManager = serviceProvider.GetService<UserManager<ApplicationUser>>();
-            var storeManager = serviceProvider.GetService<CommunityStoreContext>();
             if (userManager != null)
             {
                 // Find user by email address
@@ -35,8 +34,6 @@ namespace Lab8.Data
                     // Create new user if none exists
                     user = new ApplicationUser { UserName = UserName, Email=UserName };
                     var manager = new Manager { Name=user.Email,Email = user.Email };
-                    storeManager.Managers.Add(manager);
-                    storeManager.SaveChanges();
                     await userManager.CreateAsync(user, userPw);
                 }
 

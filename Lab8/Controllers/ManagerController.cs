@@ -1,39 +1,41 @@
-﻿using Lab8.Models.DTO;
-using Lab8.Models;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using System.Data;
-using Lab8.Areas.Identity.Data;
-using Lab8.Data;
-using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Lab8.Data;
+using Lab8.Models.DTO;
+using Lab8.Areas.Identity.Data;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
+using System.Data;
+using Lab8.Models;
 
 namespace Lab8.Controllers
 {
     public class ManagerController : Controller
     {
+        private readonly CommunityStoreContext _context;
 
+        private readonly UserManager<ApplicationUser> _userManager;
+        public ManagerController(CommunityStoreContext context, UserManager<ApplicationUser> userManager)
+        {
+            _context = context;
+            _userManager = userManager;
+        }
 
-            private readonly CommunityStoreContext _context;
-
-            private readonly UserManager<ApplicationUser> _userManager;
-            public ManagerController(CommunityStoreContext context, UserManager<ApplicationUser> userManager)
-            {
-                _context = context;
-                _userManager = userManager;
-            }
-
-            // GET: ManagerController
-            [Authorize(Roles = "Manager")]
+        // GET: Manager
+        [Authorize(Roles = "Manager")]
         public async Task<IActionResult> Index()
         {
             List<Listing> listings = await _context.Listings
-                           .Include(listing => listing.Condition)
-                           .Include(listing => listing.Store)
-                           .Include(listing => listing.ClaimedBy)
-                           .Include(listing => listing.Status)
-                           .ToListAsync();
+                        .Include(listing => listing.Condition)
+                        .Include(listing => listing.Store)
+                        .Include(listing => listing.ClaimedBy)
+                        .Include(listing => listing.Status)
+                        .ToListAsync();
 
             foreach (Listing listing in listings)
             {
@@ -41,10 +43,10 @@ namespace Lab8.Controllers
                 await _context.Entry(listing).Reference(l => l.CreatedBy).LoadAsync();
             }
 
-            List<ManagerListingDTO> listDTOs = new();
+            List<ListingDTO> listDTOs = new();
             foreach (Listing l in listings)
             {
-                ManagerListingDTO listingDTO = new()
+                ListingDTO listingDTO = new()
                 {
                     ListingID = l.ListingID,
                     Quantity = l.Quantity,
@@ -58,6 +60,72 @@ namespace Lab8.Controllers
             }
 
             return View(listDTOs);
+        }
+
+        // GET: Manager/Details/5
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (id == null || _context.ListingDTO == null)
+            {
+                return NotFound();
+            }
+
+            var ListingDTO = await _context.ListingDTO
+                .FirstOrDefaultAsync(m => m.ListingID == id);
+            if (ListingDTO == null)
+            {
+                return NotFound();
+            }
+
+            return View(ListingDTO);
+        }
+
+
+
+
+
+
+
+        // GET: Manager/Delete/5
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id == null || _context.ListingDTO == null)
+            {
+                return NotFound();
+            }
+
+            var ListingDTO = await _context.ListingDTO
+                .FirstOrDefaultAsync(m => m.ListingID == id);
+            if (ListingDTO == null)
+            {
+                return NotFound();
+            }
+
+            return View(ListingDTO);
+        }
+
+        // POST: Manager/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            if (_context.ListingDTO == null)
+            {
+                return Problem("Entity set 'CommunityStoreContext.ListingDTO'  is null.");
+            }
+            var ListingDTO = await _context.ListingDTO.FindAsync(id);
+            if (ListingDTO != null)
+            {
+                _context.ListingDTO.Remove(ListingDTO);
+            }
+            
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+
+        private bool ListingDTOExists(int id)
+        {
+          return _context.ListingDTO.Any(e => e.ListingID == id);
         }
 
         [Authorize(Roles = "Manager")]
@@ -79,16 +147,16 @@ namespace Lab8.Controllers
                     if (entity != null)
                     {
 
-                    if (entity.Status.Description == "Unapproved")
-                    {
-                        entity.Status.Description = "Approved";
+                        if (entity.Status.Description == "Unapproved")
+                        {
+                            entity.Status.Description = "Approved";
+                        }
+                        else
+                        {
+                            entity.Status.Description = "Unapproved";
+                        }
+                        await _context.SaveChangesAsync();
                     }
-                    else
-                    {
-                        entity.Status.Description = "Unapproved";
-                    }
-                    await _context.SaveChangesAsync();
-                }
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -107,73 +175,5 @@ namespace Lab8.Controllers
         }
 
 
-        // GET: ManagerController/Details/5
-        public ActionResult Details(int id)
-        {
-            return View();
-        }
-
-        // GET: ManagerController/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: ManagerController/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        // GET: ManagerController/Edit/5
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
-
-        // POST: ManagerController/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        // GET: ManagerController/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: ManagerController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
     }
 }

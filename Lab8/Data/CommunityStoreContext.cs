@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Lab8.Models;
+using Lab8.Models.DTO;
 
 namespace Lab8.Data
 {
@@ -17,5 +18,7 @@ namespace Lab8.Data
         public DbSet<Status> Status { get; set; }
         public DbSet<Listing> Listings { get; set; }
         public DbSet<Store> Stores { get; set; }
+        public DbSet<Lab8.Models.DTO.ListingDTO> ListingDTO { get; set; }
+
     }
 }

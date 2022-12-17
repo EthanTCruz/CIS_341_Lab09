@@ -47,8 +47,8 @@ namespace Lab8.Data
             //get rid of manager id once figured how to make it pk
             var manager = new Manager
             {
-                Name = "ManagerPerson",
-                Email = "Manager@gmail.com"
+                Name = "test manager",
+                Email = "manager@gmail.com"
             };
             context.Managers.Add(manager);
             
