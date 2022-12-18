@@ -153,7 +153,7 @@ namespace Lab8.Areas.Identity.Pages.Account
 
 
 
-
+                    await _userManager.AddToRoleAsync(user, "Customer");
 
                     _logger.LogInformation("User created a new account with password.");
 
