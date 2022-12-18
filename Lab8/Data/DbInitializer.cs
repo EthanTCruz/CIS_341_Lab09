@@ -23,7 +23,7 @@ namespace Lab8.Data
             var claimedby = new Customer
             {
                 Name = "Customer Person",
-                Email = "Customer@gmail.com"
+                Email = "customer@gmail.com"
 
             };
             context.Customers.Add(claimedby);

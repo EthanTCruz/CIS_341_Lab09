@@ -21,10 +21,7 @@ namespace Lab8.Controllers
         }
 
 
-        public IActionResult SubmitListing()
-        {
-            return View();
-        }
+
 
         public async Task<IActionResult> Details(int? id)
         {
@@ -138,24 +135,29 @@ namespace Lab8.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // POST: Manager/Create
+        public IActionResult CreateListing()
+        {
+            return View();
+        }
+
+        // POST: ListingDTOes/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ListingID,StoreID,Condition,Description,Quantity,CreatedBy,Store,Status")] ListingDTO ListingDTO)
+        public async Task<IActionResult> Create([Bind("ListingID,Condition,Description,Quantity,CreatedBy,ClaimedBy,Store,Status")] ListingDTO listingDTO)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(ListingDTO);
+                _context.Add(listingDTO);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(ListingDTO);
+            return View(listingDTO);
         }
 
         [Authorize]
-        public async Task<IActionResult> ViewSubmittedListings()
+        public async Task<IActionResult> SubmittedListings()
         {
             Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
             
@@ -165,8 +167,12 @@ namespace Lab8.Controllers
 
 
             List<Listing> listings = await _context.Listings
-                .Include(listing => listing.Condition)
-                .Include(listing => listing.Store)
+                .Include(l => l.ClaimedBy)
+                .Include(l => l.Condition)
+                .Include(l => l.CreatedBy)
+                .Include(l => l.Status)
+                .Include(l => l.Store)
+                .Include(l => l.Type)
                 .Where(Listing=>Listing.CreatedBy.Email==user.Email)
                 .ToListAsync();
 
@@ -180,19 +186,76 @@ namespace Lab8.Controllers
             List<ListingDTO> listDTOs = new();
             foreach (Listing l in listings)
             {
-                if (l.ClaimedBy.Email.Equals(user.Email)) { 
-                ListingDTO listingDTO = new()
+                if (l.ClaimedBy != null)
                 {
-                    ListingID = l.ListingID,
-                    Quantity = l.Quantity,
-                    Description = l.Description,
-                    CreatedBy = l.CreatedBy.Name,
-                    ClaimedBy = l.ClaimedBy.Name,
-                    Store = l.Store.Name,
-                    Condition = l.Condition.Description
-                };
+                    if (l.CreatedBy.Email.Equals(user.Email))
+                    {
+                        ListingDTO listingDTO = new()
+                        {
+                            ListingID = l.ListingID,
+                            Quantity = l.Quantity,
+                            Description = l.Description,
+                            CreatedBy = l.CreatedBy.Name,
+                            ClaimedBy = l.ClaimedBy.Name,
+                            Store = l.Store.Name,
+                            Condition = l.Condition.Description
+                        };
 
-                listDTOs.Add(listingDTO);
+                        listDTOs.Add(listingDTO);
+                    }
+                }
+            }
+
+            return View(listDTOs);
+        }
+
+        [Authorize]
+        public async Task<IActionResult> ClaimedListings()
+        {
+            Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
+
+            var user = await GetCurrentUserAsync();
+
+            var userId = user?.Id;
+
+
+            List<Listing> listings = await _context.Listings
+                .Include(l => l.ClaimedBy)
+                .Include(l => l.Condition)
+                .Include(l => l.CreatedBy)
+                .Include(l => l.Status)
+                .Include(l => l.Store)
+                .Include(l => l.Type)
+                .Where(Listing => Listing.ClaimedBy.Email == user.Email)
+                .ToListAsync();
+
+            //unecessary?
+            foreach (Listing listing in listings)
+            {
+
+                await _context.Entry(listing).Reference(l => l.CreatedBy).LoadAsync();
+            }
+
+            List<ListingDTO> listDTOs = new();
+            foreach (Listing l in listings)
+            {
+                if (l.ClaimedBy != null)
+                {
+                    if (l.ClaimedBy.Email.Equals(user.Email))
+                    {
+                        ListingDTO listingDTO = new()
+                        {
+                            ListingID = l.ListingID,
+                            Quantity = l.Quantity,
+                            Description = l.Description,
+                            CreatedBy = l.CreatedBy.Name,
+                            ClaimedBy = l.ClaimedBy.Name,
+                            Store = l.Store.Name,
+                            Condition = l.Condition.Description
+                        };
+
+                        listDTOs.Add(listingDTO);
+                    }
                 }
             }
 

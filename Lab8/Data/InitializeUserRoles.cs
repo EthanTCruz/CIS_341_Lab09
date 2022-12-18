@@ -10,12 +10,17 @@ namespace Lab8.Data
         private readonly static string ManagerRole = "Manager";
         private readonly static string Password = "M0kkul4999.";
 
+        private readonly static string CustomerRole = "Customer";
+
         public static async Task Initialize(IServiceProvider serviceProvider)
         {
             using (var context = new AuthenticationContext(serviceProvider.GetRequiredService<DbContextOptions<AuthenticationContext>>()))
             {
                 var ManagerID = await EnsureUser(serviceProvider, Password, "manager@gmail.com");
                 await EnsureRole(serviceProvider, ManagerID, ManagerRole);
+
+                var CustomerID = await EnsureUser(serviceProvider, Password, "customer@gmail.com");
+                await EnsureRole(serviceProvider, CustomerID, CustomerRole);
 
             }
         }

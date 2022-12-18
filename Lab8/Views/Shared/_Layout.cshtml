@@ -20,20 +20,16 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
 
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Customer" asp-action="ViewSubmittedListings">Created Listings</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
                       @if (User.IsInRole("Customer"))
                         {
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Customer" asp-action="SubmittedListings">Submitted Listings</a>
                         </li>
-
+                                                <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Customer" asp-action="CreateListing">Create Listing</a>
+                        </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Customer" asp-action="MyListings">My Listings</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Customer" asp-action="ClaimedListings">Claimed Listings</a>
                             </li>
                         }
                         @if (User.IsInRole("Manager"))

@@ -10,8 +10,7 @@ namespace Lab8.Models.DTO
         public int ListingID { get; set; }
 
 
-        [DisplayName("StoreID")]
-        public int StoreID { get; set; }
+
         [DisplayName("Condition")]
         public string Condition { get; set; } = string.Empty;
 
