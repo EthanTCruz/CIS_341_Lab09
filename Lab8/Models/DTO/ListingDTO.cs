@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace Lab8.Models.DTO
@@ -24,12 +25,18 @@ namespace Lab8.Models.DTO
 
         [DisplayName("ClaimedBy")]
         public string? ClaimedBy { get; set; } = "Unclaimed";
+        
         [DisplayName("Store Name")]
         public string Store { get; set; } = string.Empty;
 
         [DisplayName("Status")]
         public string Status { get; set; } = string.Empty;
 
+        [DisplayName("Type")]
+        public string Type { get; set; } = string.Empty;
+
         public ICollection<Listing> Listings { get; set; }
+
+        public IEnumerable<SelectListItem>? Stores { get; set; }
     }
 }

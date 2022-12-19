@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Lab8.Areas.Identity.Data;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using static System.Formats.Asn1.AsnWriter;
 
 namespace Lab8.Controllers
 {
@@ -135,26 +137,79 @@ namespace Lab8.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        public IActionResult CreateListing()
+        public async Task<IActionResult> CreateListing()
         {
-            return View();
+            // Retrieve the list of unique stores from the database
+            var stores = await _context.Stores.Select(s => s.Name).Distinct().ToListAsync();
+
+            // Convert the list of stores to a list of SelectListItem objects
+            var storeItems = stores.Select(s => new SelectListItem { Value = s, Text = s }).ToList();
+
+            // Create the view model and set the Stores property to the list of SelectListItem objects
+            var viewModel = new ListingDTO { Stores = storeItems };
+
+            return View(viewModel);
         }
+
+
+
+
 
         // POST: ListingDTOes/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ListingID,Condition,Description,Quantity,CreatedBy,ClaimedBy,Store,Status")] ListingDTO listingDTO)
+        public async Task<IActionResult> Create([Bind("ListingID,Condition,Description,Quantity,Store,Status,Type")] ListingDTO listingDTO)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(listingDTO);
+                var status = new Status
+                {
+                    Description = listingDTO.Status
+                };
+                var type = new Models.Type
+                {
+                    Description = listingDTO.Type
+                };
+                var condition = new Condition
+                {
+                    Description = listingDTO.Condition
+                };
+                _context.Status.Add(status);
+                _context.Conditions.Add(condition);
+                _context.Types.Add(type);
+
+
+                Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
+                var user = await GetCurrentUserAsync();
+
+                var actual_customer = await _context.Customers
+                    .Include(l => l.CustomerID)
+                    .FirstOrDefaultAsync(l => l.Email == user.Email);
+                var store = await _context.Stores
+                    .Include(l => l.StoreID)
+                    .FirstOrDefaultAsync(l => l.Name == listingDTO.Store);
+
+                var listing = new Listing
+                {
+                    Description = listingDTO.Description,
+                    Quantity = listingDTO.Quantity,
+                    CreatedByID = actual_customer.CustomerID,
+                    ClaimedByID = null,
+                    StoreID = store.StoreID,
+                    ConditionID = condition.ConditionID,
+                    TypeID = type.TypeID,
+                    StatusID = status.StatusID
+                };
+
+                _context.Listings.Add(listing);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(SubmittedListings));
             }
             return View(listingDTO);
         }
+
 
         [Authorize]
         public async Task<IActionResult> SubmittedListings()
