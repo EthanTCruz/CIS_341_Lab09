@@ -89,16 +89,26 @@ namespace Lab8.Controllers
             return View(listingDTO);
         }
 
-        // POST: ListingDTOes/Delete/5
+        // POST: Customer/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(int ListingID)
         {
             if (_context.Listings == null)
             {
                 return Problem("Entity set 'CommunityStoreContext.ListingDTO'  is null.");
             }
-            var listingDTO = await _context.Listings.FindAsync(id);
+
+
+            Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
+
+            var user = await GetCurrentUserAsync();
+
+            var actual_customer = await _context.Customers
+.FirstOrDefaultAsync(l => l.Email == user.Email);
+            var listingDTO = await _context.Listings
+                .Where(l => l.CreatedBy.Email == actual_customer.Email)
+                .FirstOrDefaultAsync(l => ListingID == l.ListingID);
             if (listingDTO != null)
             {
                 _context.Listings.Remove(listingDTO);
