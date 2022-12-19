@@ -8,56 +8,30 @@ using Lab8.Areas.Identity.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using static System.Formats.Asn1.AsnWriter;
+using System.Reflection;
 
 namespace Lab8.Controllers
 {
+    [Authorize(Roles = "Customer")]
     public class CustomerController : Controller
     {
         private readonly CommunityStoreContext _context;
 
         private readonly UserManager<ApplicationUser> _userManager;
-        public CustomerController(CommunityStoreContext context, UserManager<ApplicationUser> userManager)
+
+        private readonly ListingsController _listingsController;
+        public CustomerController(CommunityStoreContext context, UserManager<ApplicationUser> userManager, ListingsController listingController)
         {
             _context = context;
             _userManager = userManager;
+            _listingsController = listingController;
+ 
         }
 
-        public ListingDTO ConvertToListingDTO(Listing listing)
-        {
-            return new ListingDTO
-            {
-                ListingID = listing.ListingID,
-                Condition = listing.Condition.Description,
-                Description = listing.Description,
-                Quantity = listing.Quantity,
-                CreatedBy = listing.CreatedBy.Name,
-                ClaimedBy = listing.ClaimedBy?.Name ?? "Unclaimed",
-                Store = listing.Store.Name,
-                Status = listing.Status.Description,
-                Type = listing.Type.Name,
-                TypeName = listing.Type.Name,
-                TypeDescription = listing.Type.Description
-            };
-        }
-
-        public Listing ConvertToListing(ListingDTO listingDTO)
-        {
-            return new Listing
-            {
-                ListingID = listingDTO.ListingID,
-                Description = listingDTO.Description,
-                Quantity = listingDTO.Quantity,
-                Condition = new Condition { Description = listingDTO.Condition },
-                Type = new Models.Type { Name = listingDTO.Type, Description = listingDTO.TypeDescription },
-                Status = new Status { Description = listingDTO.Status },
-                Store = new Store { Name = listingDTO.Store },
-                CreatedBy = new Customer { Name = listingDTO.CreatedBy },
-                ClaimedBy = listingDTO.ClaimedBy == "Unclaimed" ? null : new Customer { Name = listingDTO.ClaimedBy }
-            };
-        }
 
 
         // GET: ListingDTOes/Delete/5
+        [Authorize(Roles = "Customer")]
         public async Task<IActionResult> DeleteListing(int? id)
         {
             if (id == null || _context.Listings == null)
@@ -85,11 +59,12 @@ namespace Lab8.Controllers
             {
                 return NotFound();
             }
-            var listingDTO = ConvertToListingDTO(listing);
+            var listingDTO = _listingsController.ConvertToListingDTO(listing);
             return View(listingDTO);
         }
 
         // POST: Customer/Delete/5
+        [Authorize(Roles = "Customer")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int ListingID)
@@ -119,6 +94,8 @@ namespace Lab8.Controllers
         }
 
 
+
+        [Authorize(Roles = "Customer")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null || _context.Listings == null)
@@ -138,11 +115,11 @@ namespace Lab8.Controllers
             {
                 return NotFound();
             }
-            var listingDTO = ConvertToListingDTO(listing);
+            var listingDTO = _listingsController.ConvertToListingDTO(listing);
             return View(listingDTO);
         }
 
-        [Authorize]
+        [Authorize(Roles = "Customer")]
         public async Task<IActionResult> Index()
         {
             List<Listing> listings = await _context.Listings
@@ -165,16 +142,7 @@ namespace Lab8.Controllers
                 {
                     customerName = l.ClaimedBy.Name;
                 }
-                ListingDTO listingDTO = new()
-                {
-                    ListingID = l.ListingID,
-                    Quantity = l.Quantity,
-                    Description = l.Description,
-                    CreatedBy = l.CreatedBy.Name,
-                    ClaimedBy = customerName,
-                    Store = l.Store.Name,
-                    Condition = l.Condition.Description
-                };
+                ListingDTO listingDTO = _listingsController.ConvertToListingDTO(l);
                 listDTOs.Add(listingDTO);
             }
 
@@ -183,7 +151,7 @@ namespace Lab8.Controllers
 
 
 
-        [Authorize]
+        [Authorize(Roles ="Customer")]
         [HttpGet]
         public async Task<IActionResult> Claim_Unclaim(int id)
         {
@@ -231,6 +199,7 @@ namespace Lab8.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        [Authorize(Roles = "Customer")]
         public async Task<IActionResult> CreateListing()
         {
             // Retrieve the list of unique stores from the database
@@ -252,6 +221,7 @@ namespace Lab8.Controllers
         // POST: ListingDTOes/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "Customer")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ListingID,Condition,Description,Quantity,Store,TypeDescription,TypeName")] ListingDTO listingDTO)
@@ -306,16 +276,17 @@ namespace Lab8.Controllers
         }
 
 
-        [Authorize]
+        [Authorize(Roles = "Customer")]
         public async Task<IActionResult> SubmittedListings()
         {
+
             Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
             
             var user = await GetCurrentUserAsync();
 
             var userId = user?.Id;
 
-
+            
             List<Listing> listings = await _context.Listings
                 .Include(l => l.ClaimedBy)
                 .Include(l => l.Condition)
@@ -325,6 +296,7 @@ namespace Lab8.Controllers
                 .Include(l => l.Type)
                 .Where(Listing=>Listing.CreatedBy.Email==user.Email)
                 .ToListAsync();
+
 
             //unecessary?
             foreach (Listing listing in listings)
@@ -336,25 +308,12 @@ namespace Lab8.Controllers
             List<ListingDTO> listDTOs = new();
             foreach (Listing l in listings)
             {
-                string customerName = "Unclaimed";
-                if (l.ClaimedByID != null)
-                {
-                    customerName = "ClaimedListings";
-                }
+
                 if (l.CreatedBy.Email.Equals(user.Email))
                     {
-                        ListingDTO listingDTO = new()
-                        {
-                            ListingID = l.ListingID,
-                            Quantity = l.Quantity,
-                            Description = l.Description,
-                            CreatedBy = l.CreatedBy.Name,
-                            ClaimedBy = customerName,
-                            Store = l.Store.Name,
-                            Condition = l.Condition.Description,
-                            TypeDescription = l.Type.Description,
-                            TypeName = l.Type.Name
-                        };
+ 
+                        ListingDTO listingDTO = _listingsController.ConvertToListingDTO(l);
+
 
                         listDTOs.Add(listingDTO);
                     
@@ -364,7 +323,7 @@ namespace Lab8.Controllers
             return View(listDTOs);
         }
 
-        [Authorize]
+        [Authorize(Roles = "Customer")]
         public async Task<IActionResult> ClaimedListings()
         {
             Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
@@ -398,16 +357,7 @@ namespace Lab8.Controllers
                 {
                     if (l.ClaimedBy.Email.Equals(user.Email))
                     {
-                        ListingDTO listingDTO = new()
-                        {
-                            ListingID = l.ListingID,
-                            Quantity = l.Quantity,
-                            Description = l.Description,
-                            CreatedBy = l.CreatedBy.Name,
-                            ClaimedBy = l.ClaimedBy.Name,
-                            Store = l.Store.Name,
-                            Condition = l.Condition.Description
-                        };
+                        ListingDTO listingDTO = _listingsController.ConvertToListingDTO(l);
 
                         listDTOs.Add(listingDTO);
                     }

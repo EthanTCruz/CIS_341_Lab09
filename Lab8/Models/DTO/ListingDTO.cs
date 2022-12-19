@@ -30,6 +30,8 @@ namespace Lab8.Models.DTO
         [DisplayName("Store Name")]
         public string Store { get; set; } = string.Empty;
 
+
+
         [DisplayName("Status")]
         public string Status { get; set; } = string.Empty;
 

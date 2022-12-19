@@ -15,15 +15,20 @@ using Lab8.Models;
 
 namespace Lab8.Controllers
 {
+    [Authorize(Roles = "Manager")]
     public class ManagerController : Controller
     {
         private readonly CommunityStoreContext _context;
 
         private readonly UserManager<ApplicationUser> _userManager;
-        public ManagerController(CommunityStoreContext context, UserManager<ApplicationUser> userManager)
+
+        private readonly ListingsController _listingsController;
+        public ManagerController(CommunityStoreContext context, UserManager<ApplicationUser> userManager, ListingsController listingController)
         {
             _context = context;
             _userManager = userManager;
+            _listingsController = listingController;
+
         }
 
         // GET: Manager
@@ -46,16 +51,8 @@ namespace Lab8.Controllers
             List<ListingDTO> listDTOs = new();
             foreach (Listing l in listings)
             {
-                ListingDTO listingDTO = new()
-                {
-                    ListingID = l.ListingID,
-                    Quantity = l.Quantity,
-                    Description = l.Description,
-                    CreatedBy = l.CreatedBy.Name,
-                    Status = l.Status.Description,
-                    Store = l.Store.Name,
-                    Condition = l.Condition.Description
-                };
+                ListingDTO listingDTO = _listingsController.ConvertToListingDTO(l);
+
                 listDTOs.Add(listingDTO);
             }
 
@@ -63,6 +60,7 @@ namespace Lab8.Controllers
         }
 
         // GET: Manager/Details/5
+        [Authorize(Roles = "Manager")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null || _context.Listings == null)
@@ -82,16 +80,7 @@ namespace Lab8.Controllers
                 return NotFound();
             }
 
-            ListingDTO listingDTO = new()
-            {
-                ListingID = listing.ListingID,
-                Quantity = listing.Quantity,
-                Description = listing.Description,
-                CreatedBy = listing.CreatedBy.Name,
-                Status = listing.Status.Description,
-                Store = listing.Store.Name,
-                Condition = listing.Condition.Description
-            };
+            ListingDTO listingDTO = _listingsController.ConvertToListingDTO(listing);
 
             return View(listingDTO);
         }
@@ -120,18 +109,10 @@ namespace Lab8.Controllers
             List<ListingDTO> listDTOs = new();
             foreach (Listing l in listings)
             {
-                if (l.Status.Description == "Unapproved") { 
-                ListingDTO listingDTO = new()
+                if (l.Status.Description == "Unapproved")
                 {
-                    ListingID = l.ListingID,
-                    Quantity = l.Quantity,
-                    Description = l.Description,
-                    CreatedBy = l.CreatedBy.Name,
-                    Status = l.Status.Description,
-                    Store = l.Store.Name,
-                    Condition = l.Condition.Description
-                };
-                listDTOs.Add(listingDTO);
+                    ListingDTO listingDTO = _listingsController.ConvertToListingDTO(l);
+                    listDTOs.Add(listingDTO);
                 }
             }
 
@@ -160,18 +141,9 @@ namespace Lab8.Controllers
             List<ListingDTO> listDTOs = new();
             foreach (Listing l in listings)
             {
-                if (l.Status.Description == "Approved"|| l.Status.Description == "Recieved")
+                if (l.Status.Description == "Approved" || l.Status.Description == "Recieved")
                 {
-                    ListingDTO listingDTO = new()
-                    {
-                        ListingID = l.ListingID,
-                        Quantity = l.Quantity,
-                        Description = l.Description,
-                        CreatedBy = l.CreatedBy.Name,
-                        Status = l.Status.Description,
-                        Store = l.Store.Name,
-                        Condition = l.Condition.Description
-                    };
+                    ListingDTO listingDTO = _listingsController.ConvertToListingDTO(l);
                     listDTOs.Add(listingDTO);
                 }
             }
@@ -205,9 +177,6 @@ namespace Lab8.Controllers
                             entity.Status.Description = "Approved";
                             await _context.SaveChangesAsync();
                         }
-
-
-
 
                     }
                 }
