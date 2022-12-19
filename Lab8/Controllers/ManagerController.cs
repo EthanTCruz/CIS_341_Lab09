@@ -323,9 +323,9 @@ namespace Lab8.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(UnapprovedListings));
+                return RedirectToAction(nameof(ApprovedListings));
             }
-            return RedirectToAction(nameof(UnapprovedListings));
+            return RedirectToAction(nameof(ApprovedListings));
         }
 
     }

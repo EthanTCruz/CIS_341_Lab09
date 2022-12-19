@@ -51,6 +51,16 @@
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.ListingID">Edit</a> |
+@if (@Model.Status == "Approved"){
+<a asp-action="Recieved_PickedUp" asp-route-id="@Model?.ListingID">Set to recieved</a>
+} else if(@Model.Status == "Recieved")
+{
+<a asp-action="Recieved_PickedUp" asp-route-id="@Model?.ListingID">Set to picked up</a> 
+} else if(@Model.Status == "Unapproved")
+{
+<a asp-action="Approve" asp-route-id="@Model?.ListingID">Approve</a>
+<a asp-action="Disapprove" asp-route-id="@Model?.ListingID">Disapprove</a> 
+}
+
     <a asp-action="Index">Back to List</a>
 </div>

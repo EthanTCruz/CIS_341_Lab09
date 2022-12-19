@@ -64,8 +64,13 @@
                 @Html.DisplayFor(modelItem => item.Status)
             </td>
             <td>
-                    <a asp-action="Recieved_PickedUp" asp-route-id="@item.ListingID">@Html.DisplayFor(modelItem => item.Status)</a> |
-             </td>
+                @if (item.Status == "Approved"){
+                        <a asp-action="Recieved_PickedUp" asp-route-id="@item.ListingID">Set to recieved</a>
+                    } else if(item.Status == "Recieved")
+                    {
+                        <a asp-action="Recieved_PickedUp" asp-route-id="@item.ListingID">Set to picked up</a> 
+                    }
+                </td>
 
             <td>
                 <a asp-action="Details" asp-route-id="@item.ListingID">Details</a> |
