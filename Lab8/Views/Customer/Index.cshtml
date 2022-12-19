@@ -3,9 +3,10 @@
     ViewData["Title"] = "Home Page";
 }
 
+
 <h1>Listings</h1>
 
-<table class="table" cellpadding="1" cellspacing="1">
+<table id="myTable" class="table" cellpadding="1" cellspacing="1">
     <thead>
         <tr>
             <td>Listings</td>
@@ -62,3 +63,25 @@
     }
     </tbody>
 </table>
+<!-- Include the jQuery library -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- Include the DataTables library -->
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.22/datatables.min.css"/>
+<script src="https://cdn.datatables.net/v/dt/dt-1.10.22/datatables.min"></script>
+<script>
+$(document).ready(function() {
+    // Initialize DataTables on the table
+    $('#myTable').DataTable({
+        // Set the default order for the table
+        order: [[ 0, 'asc' ], [ 1, 'asc' ], [ 2, 'asc' ]],
+        // Set the column type for the Quantity column
+        columnDefs: [{
+            targets: 3,
+            type: 'num'
+        }]
+    });
+});
+
+
+</script>
