@@ -138,8 +138,8 @@ namespace Lab8.Controllers
             {
                 return NotFound();
             }
-
-            return View(listing);
+            var listingDTO = ConvertToListingDTO(listing);
+            return View(listingDTO);
         }
 
         [Authorize]

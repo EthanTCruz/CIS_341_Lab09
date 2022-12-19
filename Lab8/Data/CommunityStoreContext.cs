@@ -20,7 +20,7 @@ namespace Lab8.Data
         public DbSet<Listing> Listings { get; set; }
         public DbSet<Store> Stores { get; set; }
         //delete this line for dto later
-        public DbSet<Lab8.Models.DTO.ListingDTO> ListingDTO { get; set; }
+        //public DbSet<Lab8.Models.DTO.ListingDTO> ListingDTO { get; set; }
 
         public DbSet<SelectListGroup> SelectListGroups { get; set; }
 
@@ -30,5 +30,8 @@ namespace Lab8.Data
 
             modelBuilder.Entity<SelectListGroup>().HasNoKey();
         }
+        
+        //public DbSet<SelectListGroup> SelectListGroups { get; set; }
+
     }
 }

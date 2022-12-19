@@ -8,7 +8,7 @@ namespace Lab8.Data
     public class InitializeUsersRoles
     {
         private readonly static string ManagerRole = "Manager";
-        private readonly static string Password = "M0kkul4999.";
+        private readonly static string Password = "Admin123!";
 
         private readonly static string CustomerRole = "Customer";
 
