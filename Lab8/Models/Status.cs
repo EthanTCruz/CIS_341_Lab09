@@ -10,7 +10,7 @@ namespace Lab8.Models
         [DisplayName("Description")]
         public string Description { get; set; }
 
-        public ICollection<Listing> ListingsByCollection { get; set; }
+        public ICollection<Listing>? ListingsByCollection { get; set; }
 
     }
 }

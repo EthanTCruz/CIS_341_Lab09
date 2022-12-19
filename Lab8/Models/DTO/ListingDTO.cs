@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Lab8.Models.DTO
 {
@@ -21,7 +22,7 @@ namespace Lab8.Models.DTO
 
 
         [DisplayName("CreatedBy")]
-        public string CreatedBy { get; set; }
+        public string? CreatedBy { get; set; }
 
         [DisplayName("ClaimedBy")]
         public string? ClaimedBy { get; set; } = "Unclaimed";
@@ -35,8 +36,15 @@ namespace Lab8.Models.DTO
         [DisplayName("Type")]
         public string Type { get; set; } = string.Empty;
 
-        public ICollection<Listing> Listings { get; set; }
+        [DisplayName("Type Name")]
+        public string? TypeName { get; set; } = string.Empty;
 
+        [DisplayName("Type Description")]
+        public string? TypeDescription { get; set; } = string.Empty;
+
+
+        public ICollection<Listing>? Listings { get; set; }
+        [NotMapped]
         public IEnumerable<SelectListItem>? Stores { get; set; }
     }
 }

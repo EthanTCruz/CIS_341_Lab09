@@ -15,6 +15,6 @@ namespace Lab8.Models
 
         public Manager Manager { get; set; }
 
-        public ICollection<Listing> StoreListings { get; set; }
+        public ICollection<Listing>? StoreListings { get; set; }
     }
 }

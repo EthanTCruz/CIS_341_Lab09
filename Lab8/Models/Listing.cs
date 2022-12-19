@@ -2,11 +2,13 @@
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using System.ComponentModel;
 using static System.Formats.Asn1.AsnWriter;
+using System.ComponentModel.DataAnnotations;
 
 namespace Lab8.Models
 {
     public class Listing
     {
+        [Key]
         public int ListingID { get; set; }
         public int CreatedByID { get; set; }
         public int? ClaimedByID { get; set; }

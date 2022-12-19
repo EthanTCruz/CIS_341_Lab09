@@ -22,7 +22,91 @@ namespace Lab8.Controllers
             _userManager = userManager;
         }
 
+        public ListingDTO ConvertToListingDTO(Listing listing)
+        {
+            return new ListingDTO
+            {
+                ListingID = listing.ListingID,
+                Condition = listing.Condition.Description,
+                Description = listing.Description,
+                Quantity = listing.Quantity,
+                CreatedBy = listing.CreatedBy.Name,
+                ClaimedBy = listing.ClaimedBy?.Name ?? "Unclaimed",
+                Store = listing.Store.Name,
+                Status = listing.Status.Description,
+                Type = listing.Type.Name,
+                TypeName = listing.Type.Name,
+                TypeDescription = listing.Type.Description
+            };
+        }
 
+        public Listing ConvertToListing(ListingDTO listingDTO)
+        {
+            return new Listing
+            {
+                ListingID = listingDTO.ListingID,
+                Description = listingDTO.Description,
+                Quantity = listingDTO.Quantity,
+                Condition = new Condition { Description = listingDTO.Condition },
+                Type = new Models.Type { Name = listingDTO.Type, Description = listingDTO.TypeDescription },
+                Status = new Status { Description = listingDTO.Status },
+                Store = new Store { Name = listingDTO.Store },
+                CreatedBy = new Customer { Name = listingDTO.CreatedBy },
+                ClaimedBy = listingDTO.ClaimedBy == "Unclaimed" ? null : new Customer { Name = listingDTO.ClaimedBy }
+            };
+        }
+
+
+        // GET: ListingDTOes/Delete/5
+        public async Task<IActionResult> DeleteListing(int? id)
+        {
+            if (id == null || _context.Listings == null)
+            {
+                return NotFound();
+            }
+
+            Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
+
+            var user = await GetCurrentUserAsync();
+
+            var actual_customer = await _context.Customers
+.FirstOrDefaultAsync(l => l.Email == user.Email);
+            var listing = await _context.Listings
+                .Include(l => l.ClaimedBy)
+                .Include(l => l.Condition)
+                .Include(l => l.CreatedBy)
+                .Include(l => l.Status)
+                .Include(l => l.Store)
+                .Include(l => l.Type)
+                .Where(l => l.CreatedBy.CustomerID == actual_customer.CustomerID)
+                .FirstOrDefaultAsync(m => m.ListingID == id);
+
+            if (listing == null)
+            {
+                return NotFound();
+            }
+            var listingDTO = ConvertToListingDTO(listing);
+            return View(listingDTO);
+        }
+
+        // POST: ListingDTOes/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(int id)
+        {
+            if (_context.Listings == null)
+            {
+                return Problem("Entity set 'CommunityStoreContext.ListingDTO'  is null.");
+            }
+            var listingDTO = await _context.Listings.FindAsync(id);
+            if (listingDTO != null)
+            {
+                _context.Listings.Remove(listingDTO);
+            }
+
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
 
 
         public async Task<IActionResult> Details(int? id)
@@ -160,17 +244,20 @@ namespace Lab8.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ListingID,Condition,Description,Quantity,Store,Status,Type")] ListingDTO listingDTO)
+        public async Task<IActionResult> Create([Bind("ListingID,Condition,Description,Quantity,Store,TypeDescription,TypeName")] ListingDTO listingDTO)
         {
+
+
             if (ModelState.IsValid)
             {
                 var status = new Status
                 {
-                    Description = listingDTO.Status
+                    Description = "Unapproved"
                 };
                 var type = new Models.Type
                 {
-                    Description = listingDTO.Type
+                    Name = listingDTO.TypeName,
+                    Description = listingDTO.TypeDescription
                 };
                 var condition = new Condition
                 {
@@ -179,35 +266,33 @@ namespace Lab8.Controllers
                 _context.Status.Add(status);
                 _context.Conditions.Add(condition);
                 _context.Types.Add(type);
-
+                await _context.SaveChangesAsync();
 
                 Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
                 var user = await GetCurrentUserAsync();
 
                 var actual_customer = await _context.Customers
-                    .Include(l => l.CustomerID)
                     .FirstOrDefaultAsync(l => l.Email == user.Email);
                 var store = await _context.Stores
-                    .Include(l => l.StoreID)
                     .FirstOrDefaultAsync(l => l.Name == listingDTO.Store);
 
                 var listing = new Listing
                 {
                     Description = listingDTO.Description,
                     Quantity = listingDTO.Quantity,
-                    CreatedByID = actual_customer.CustomerID,
-                    ClaimedByID = null,
-                    StoreID = store.StoreID,
-                    ConditionID = condition.ConditionID,
-                    TypeID = type.TypeID,
-                    StatusID = status.StatusID
+                    CreatedBy = actual_customer,
+                    ClaimedBy = null,
+                    Store = store,
+                    Condition = condition,
+                    Type = type,
+                    Status = status
                 };
 
                 _context.Listings.Add(listing);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(SubmittedListings));
             }
-            return View(listingDTO);
+            return RedirectToAction(nameof(SubmittedListings));
         }
 
 
@@ -241,9 +326,12 @@ namespace Lab8.Controllers
             List<ListingDTO> listDTOs = new();
             foreach (Listing l in listings)
             {
-                if (l.ClaimedBy != null)
+                string customerName = "Unclaimed";
+                if (l.ClaimedByID != null)
                 {
-                    if (l.CreatedBy.Email.Equals(user.Email))
+                    customerName = "ClaimedListings";
+                }
+                if (l.CreatedBy.Email.Equals(user.Email))
                     {
                         ListingDTO listingDTO = new()
                         {
@@ -251,13 +339,15 @@ namespace Lab8.Controllers
                             Quantity = l.Quantity,
                             Description = l.Description,
                             CreatedBy = l.CreatedBy.Name,
-                            ClaimedBy = l.ClaimedBy.Name,
+                            ClaimedBy = customerName,
                             Store = l.Store.Name,
-                            Condition = l.Condition.Description
+                            Condition = l.Condition.Description,
+                            TypeDescription = l.Type.Description,
+                            TypeName = l.Type.Name
                         };
 
                         listDTOs.Add(listingDTO);
-                    }
+                    
                 }
             }
 

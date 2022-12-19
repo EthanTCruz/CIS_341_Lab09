@@ -8,7 +8,7 @@
 <h1>SubmittedListings</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="CreateListing">Create New</a>
 </p>
 <table class="table">
     <thead>
@@ -33,6 +33,15 @@
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Status)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Type)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TypeName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TypeDescription)
             </th>
             <th></th>
         </tr>
@@ -62,9 +71,19 @@
                 @Html.DisplayFor(modelItem => item.Status)
             </td>
             <td>
+                @Html.DisplayFor(modelItem => item.Type)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TypeName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TypeDescription)
+            </td>
+
+            <td>
                 <a asp-action="Edit" asp-route-id="@item.ListingID">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.ListingID">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.ListingID">Delete</a>
+                <a asp-action="DeleteListing" asp-route-id="@item.ListingID">Delete</a>
             </td>
         </tr>
 }
