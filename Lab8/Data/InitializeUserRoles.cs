@@ -38,7 +38,6 @@ namespace Lab8.Data
                 {
                     // Create new user if none exists
                     user = new ApplicationUser { UserName = UserName, Email=Email };
-                    var manager = new Manager { Name=user.UserName,Email = user.Email };
                     await userManager.CreateAsync(user, userPw);
                 }
 

@@ -82,6 +82,15 @@ $(document).ready(function() {
         }]
     });
 });
+    // Initialize the counter variable
+    let counter = 1;
 
+    // Iterate over the rows in the table
+    $('#myTable tbody tr').each(function() {
+        // Set the value of the first cell in the row to the counter value
+        $(this).find('td:first').text(counter);
+        // Increment the counter
+        counter++;
+    });
 
 </script>

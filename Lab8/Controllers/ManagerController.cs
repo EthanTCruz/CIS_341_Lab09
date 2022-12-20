@@ -22,65 +22,65 @@ namespace Lab8.Controllers
 
         private readonly UserManager<ApplicationUser> _userManager;
 
-        private readonly ListingsController _listingsController;
-        public ManagerController(CommunityStoreContext context, UserManager<ApplicationUser> userManager, ListingsController listingController)
+
+        public ManagerController(CommunityStoreContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
             _userManager = userManager;
-            _listingsController = listingController;
+
 
         }
 
-        // GET: Manager
-        [Authorize(Roles = "Manager")]
-        public async Task<IActionResult> Index()
+        public ListingDTO ConvertToListingDTO(Listing listing)
         {
-            List<Listing> listings = await _context.Listings
-                        .Include(listing => listing.Condition)
-                        .Include(listing => listing.Store)
-                        .Include(listing => listing.ClaimedBy)
-                        .Include(listing => listing.Status)
-                        .ToListAsync();
-
-            foreach (Listing listing in listings)
+            return new ListingDTO
             {
-
-                await _context.Entry(listing).Reference(l => l.CreatedBy).LoadAsync();
-            }
-
-            List<ListingDTO> listDTOs = new();
-            foreach (Listing l in listings)
-            {
-                ListingDTO listingDTO = _listingsController.ConvertToListingDTO(l);
-
-                listDTOs.Add(listingDTO);
-            }
-
-            return View(listDTOs);
+                ListingID = listing.ListingID,
+                Condition = listing.Condition.Description,
+                Description = listing.Description,
+                Quantity = listing.Quantity,
+                CreatedBy = listing.CreatedBy.Name,
+                ClaimedBy = listing.ClaimedBy?.Name ?? "Unclaimed",
+                Store = listing.Store.Name,
+                Status = listing.Status.Description,
+                Type = listing.Type.Name,
+                TypeName = listing.Type.Name,
+                TypeDescription = listing.Type.Description
+            };
         }
+
+
+
 
         // GET: Manager/Details/5
+        // Only allow users with the "Manager" role to access this action
         [Authorize(Roles = "Manager")]
         public async Task<IActionResult> Details(int? id)
         {
+            // Return NotFound if the id is null or the Listings collection is null
             if (id == null || _context.Listings == null)
             {
                 return NotFound();
             }
 
+            // Load the Listing entity from the database and include related entities
             var listing = await _context.Listings
-                .Include(listing => listing.Condition)
-                .Include(listing => listing.Store)
-                .Include(listing => listing.CreatedBy)
-                .Include(listing => listing.ClaimedBy)
-                .Include(listing => listing.Status)
+                .Include(l => l.ClaimedBy)
+                .Include(l => l.Condition)
+                .Include(l => l.CreatedBy)
+                .Include(l => l.Status)
+                .Include(l => l.Store)
+                .Include(l => l.Type)
                 .FirstOrDefaultAsync(m => m.ListingID == id);
+
+            // Return NotFound if the listing is null
             if (listing == null)
             {
                 return NotFound();
             }
 
-            ListingDTO listingDTO = _listingsController.ConvertToListingDTO(listing);
+            // Convert the Listing entity to a ListingDTO object
+            ListingDTO listingDTO = ConvertToListingDTO(listing);
 
             return View(listingDTO);
         }
@@ -90,32 +90,50 @@ namespace Lab8.Controllers
 
 
         // GET: Manager
+        // Only allow users with the "Manager" role to access this action
         [Authorize(Roles = "Manager")]
         public async Task<IActionResult> UnapprovedListings()
         {
-            List<Listing> listings = await _context.Listings
-                        .Include(listing => listing.Condition)
-                        .Include(listing => listing.Store)
-                        .Include(listing => listing.ClaimedBy)
-                        .Include(listing => listing.Status)
-                        .ToListAsync();
+            // Get the current user
+            Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
+            var user = await GetCurrentUserAsync();
 
+            // If the user is null, try to get the current user again
+            if (user == null)
+            {
+                user = await GetCurrentUserAsync();
+            }
+
+            // Load unapproved listings for the current user's store from the database and include related entities
+            List<Listing> listings = await _context.Listings
+                .Include(l => l.ClaimedBy)
+                .Include(l => l.Condition)
+                .Include(l => l.CreatedBy)
+                .Include(l => l.Status)
+                .Include(l => l.Store)
+                .Include(l => l.Type)
+                .Where(l => l.Status.Description == "Unapproved" && l.Store.Manager.Email == user.Email)
+                .ToListAsync();
+
+            // Load the CreatedBy reference for each listing
             foreach (Listing listing in listings)
             {
-
                 await _context.Entry(listing).Reference(l => l.CreatedBy).LoadAsync();
             }
 
-            List<ListingDTO> listDTOs = new();
+            // Convert the listings to ListingDTO objects and add them to a list
+            List<ListingDTO> listDTOs = new List<ListingDTO>();
             foreach (Listing l in listings)
             {
+                // Only add listings with the "Unapproved" status to the list
                 if (l.Status.Description == "Unapproved")
                 {
-                    ListingDTO listingDTO = _listingsController.ConvertToListingDTO(l);
+                    ListingDTO listingDTO = ConvertToListingDTO(l);
                     listDTOs.Add(listingDTO);
                 }
             }
 
+            // Return the list of ListingDTO objects to the view
             return View(listDTOs);
         }
 
@@ -125,12 +143,19 @@ namespace Lab8.Controllers
         [Authorize(Roles = "Manager")]
         public async Task<IActionResult> ApprovedListings()
         {
+            Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
+
+            var user = await GetCurrentUserAsync();
+
             List<Listing> listings = await _context.Listings
-                        .Include(listing => listing.Condition)
-                        .Include(listing => listing.Store)
-                        .Include(listing => listing.ClaimedBy)
-                        .Include(listing => listing.Status)
-                        .ToListAsync();
+                .Include(l => l.ClaimedBy)
+                .Include(l => l.Condition)
+                .Include(l => l.CreatedBy)
+                .Include(l => l.Status)
+                .Include(l => l.Store)
+                .Include(l => l.Type)
+                .Where(predicate: l => l.Store.Manager.Email == user.Email)
+                .ToListAsync();
 
             foreach (Listing listing in listings)
             {
@@ -143,7 +168,7 @@ namespace Lab8.Controllers
             {
                 if (l.Status.Description == "Approved" || l.Status.Description == "Recieved")
                 {
-                    ListingDTO listingDTO = _listingsController.ConvertToListingDTO(l);
+                    ListingDTO listingDTO = ConvertToListingDTO(l);
                     listDTOs.Add(listingDTO);
                 }
             }

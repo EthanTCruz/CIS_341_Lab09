@@ -22,7 +22,7 @@ namespace Lab8.Data
 
             var customer2 = new Customer
             {
-                Name = "Customer Person",
+                Name = "Customer",
                 Email = "customer@gmail.com"
 
             };
@@ -127,7 +127,7 @@ namespace Lab8.Data
 
             var manager1 = new Manager
             {
-                Name = "Eric Manager",
+                Name = "Manager",
                 Email = "manager@gmail.com"
             };
             context.Managers.Add(manager1);
@@ -135,14 +135,14 @@ namespace Lab8.Data
             var manager2 = new Manager
             {
                 Name = "Jeff Musk",
-                Email = "manager@gmail.com"
+                Email = "jm@gmail.com"
             };
             context.Managers.Add(manager2);
 
             var manager3 = new Manager
             {
                 Name = "Elon Bezos",
-                Email = "manager@gmail.com"
+                Email = "eb@gmail.com"
             };
             context.Managers.Add(manager3);
 

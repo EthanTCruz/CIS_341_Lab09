@@ -19,16 +19,32 @@ namespace Lab8.Controllers
 
         private readonly UserManager<ApplicationUser> _userManager;
 
-        private readonly ListingsController _listingsController;
-        public CustomerController(CommunityStoreContext context, UserManager<ApplicationUser> userManager, ListingsController listingController)
+
+        public CustomerController(CommunityStoreContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
             _userManager = userManager;
-            _listingsController = listingController;
+
  
         }
 
-
+        public ListingDTO ConvertToListingDTO(Listing listing)
+        {
+            return new ListingDTO
+            {
+                ListingID = listing.ListingID,
+                Condition = listing.Condition.Description,
+                Description = listing.Description,
+                Quantity = listing.Quantity,
+                CreatedBy = listing.CreatedBy.Name,
+                ClaimedBy = listing.ClaimedBy?.Name ?? "Unclaimed",
+                Store = listing.Store.Name,
+                Status = listing.Status.Description,
+                Type = listing.Type.Name,
+                TypeName = listing.Type.Name,
+                TypeDescription = listing.Type.Description
+            };
+        }
 
         // GET: ListingDTOes/Delete/5
         [Authorize(Roles = "Customer")]
@@ -59,7 +75,7 @@ namespace Lab8.Controllers
             {
                 return NotFound();
             }
-            var listingDTO = _listingsController.ConvertToListingDTO(listing);
+            var listingDTO = ConvertToListingDTO(listing);
             return View(listingDTO);
         }
 
@@ -115,7 +131,7 @@ namespace Lab8.Controllers
             {
                 return NotFound();
             }
-            var listingDTO = _listingsController.ConvertToListingDTO(listing);
+            var listingDTO = ConvertToListingDTO(listing);
             return View(listingDTO);
         }
 
@@ -123,9 +139,13 @@ namespace Lab8.Controllers
         public async Task<IActionResult> Index()
         {
             List<Listing> listings = await _context.Listings
-                .Include(listing => listing.Condition)
-                .Include(listing => listing.Store)
-                .Include(listing => listing.ClaimedBy)
+                .Include(l => l.ClaimedBy)
+                .Include(l => l.Condition)
+                .Include(l => l.CreatedBy)
+                .Include(l => l.Status)
+                .Include(l => l.Store)
+                .Include(l => l.Type)
+                .Where(l => l.Status.Description == "Approved" || l.Status.Description == "Recieved")
                 .ToListAsync();
 
             foreach (Listing listing in listings)
@@ -142,7 +162,7 @@ namespace Lab8.Controllers
                 {
                     customerName = l.ClaimedBy.Name;
                 }
-                ListingDTO listingDTO = _listingsController.ConvertToListingDTO(l);
+                ListingDTO listingDTO = ConvertToListingDTO(l);
                 listDTOs.Add(listingDTO);
             }
 
@@ -153,6 +173,7 @@ namespace Lab8.Controllers
 
         [Authorize(Roles ="Customer")]
         [HttpGet]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Claim_Unclaim(int id)
         {
 
@@ -312,7 +333,7 @@ namespace Lab8.Controllers
                 if (l.CreatedBy.Email.Equals(user.Email))
                     {
  
-                        ListingDTO listingDTO = _listingsController.ConvertToListingDTO(l);
+                        ListingDTO listingDTO = ConvertToListingDTO(l);
 
 
                         listDTOs.Add(listingDTO);
@@ -326,11 +347,10 @@ namespace Lab8.Controllers
         [Authorize(Roles = "Customer")]
         public async Task<IActionResult> ClaimedListings()
         {
+
             Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
 
             var user = await GetCurrentUserAsync();
-
-            var userId = user?.Id;
 
 
             List<Listing> listings = await _context.Listings
@@ -357,7 +377,7 @@ namespace Lab8.Controllers
                 {
                     if (l.ClaimedBy.Email.Equals(user.Email))
                     {
-                        ListingDTO listingDTO = _listingsController.ConvertToListingDTO(l);
+                        ListingDTO listingDTO = ConvertToListingDTO(l);
 
                         listDTOs.Add(listingDTO);
                     }

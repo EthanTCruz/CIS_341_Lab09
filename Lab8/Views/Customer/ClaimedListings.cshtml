@@ -62,9 +62,9 @@
                 @Html.DisplayFor(modelItem => item.Status)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.ListingID">Edit</a> |
+
                 <a asp-action="Details" asp-route-id="@item.ListingID">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.ListingID">Delete</a>
+                <a asp-action="Claim_Unclaim" asp-route-id="@item.ListingID">Unclaim</a>
             </td>
         </tr>
 }
