@@ -1,11 +1,11 @@
 # Community Marketplace
 Community Marketplace
 
-Customer Cedentials
+Customer Cedentials: 
   Username: "Customer"
   Password: "Admin123!"
  
- Manager Credentials
+ Manager Credentials: 
   Username: "Manager"
   Password: "Admin123!"
  
