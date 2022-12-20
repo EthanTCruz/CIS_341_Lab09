@@ -11,6 +11,6 @@ namespace Lab8.Models
         [DisplayName("Name")]
         public string Name { get; set; }
 
-        public ICollection<Listing> ListingsByCollection { get; set; }
+        public ICollection<Listing>? ListingsByCollection { get; set; }
     }
 }

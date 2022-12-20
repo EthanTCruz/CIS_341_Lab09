@@ -1,0 +1,96 @@
+﻿@model ICollection<ListingDTO>
+@{
+    ViewData["Title"] = "Home Page";
+}
+<link href="~/lib/datatables/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<h1>Listings</h1>
+
+<table id="myTable" class="table" cellpadding="1" cellspacing="1">
+    <thead>
+        <tr>
+            <td>Listings</td>
+           <td>
+               Description
+            </td>
+            <td>
+               Condition
+            </td>
+            <td>
+                Quantity
+            </td>
+
+            <td>
+                Store
+            </td>
+                        <td>
+                View Details
+            </td>
+                        <td>
+                Claimed By
+            </td>
+
+        </tr>
+    </thead>
+    <tbody>
+    @foreach(ListingDTO l in Model) {
+        <tr>
+<td>
+                @l.ListingID
+            </td>
+            <td>
+                @l.Description
+            </td>
+            <td>
+                @l.Condition
+            </td>
+            <td>
+                @l.Quantity
+            </td>
+
+            <td>
+                @l.Store
+            </td>
+                        <td>
+                <a asp-action="Details" asp-route-id="@l.ListingID">Details</a>
+            </td>
+                        <td>
+                <a asp-action="Claim_Unclaim" asp-route-id="@l.ListingID">@l.ClaimedBy</a>
+            </td>
+
+        </tr>
+
+    }
+    </tbody>
+</table>
+@section Scripts
+{
+    <script src="~/lib/datatables/js/jquery.dataTables.min.js"></script>
+    <script src="~/lib/datatables/js/dataTables.bootstrap4.min.js"></script>
+}
+<script>
+$(document).ready(function() {
+    // Initialize DataTables on the table
+    $('#myTable').DataTable({
+        // Set the default order for the table
+        order: [[ 0, 'asc' ], [ 1, 'asc' ], [ 2, 'asc' ]],
+        // Set the column type for the Quantity column
+        columnDefs: [{
+            targets: 3,
+            type: 'num'
+        }]
+    });
+});
+    // Initialize the counter variable
+    let counter = 1;
+
+    // Iterate over the rows in the table
+    $('#myTable tbody tr').each(function() {
+        // Set the value of the first cell in the row to the counter value
+        $(this).find('td:first').text(counter);
+        // Increment the counter
+        counter++;
+    });
+
+</script>

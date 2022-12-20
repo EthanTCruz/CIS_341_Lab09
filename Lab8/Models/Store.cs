@@ -8,9 +8,13 @@ namespace Lab8.Models
         public int StoreID { get; set; } 
         [DisplayName("Name")]
         public string Name { get; set; }
-        [DisplayName("Address")]
-        public string Address { get; set; } 
 
-        public ICollection<Listing> StoreListings { get; set; }
+
+        public int ManagerID { get; set; }
+
+
+        public Manager Manager { get; set; }
+
+        public ICollection<Listing>? StoreListings { get; set; }
     }
 }

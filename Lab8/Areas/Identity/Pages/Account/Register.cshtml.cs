@@ -21,6 +21,7 @@ using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using Lab8.Data;
 using Lab8.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Lab8.Areas.Identity.Pages.Account
 {
@@ -85,6 +86,12 @@ namespace Lab8.Areas.Identity.Pages.Account
             [Display(Name = "Email")]
             public string Email { get; set; }
 
+            [Required]
+            [Display(Name = "UserName")]
+            public string UserName { get; set; }
+
+
+
             /// <summary>
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
@@ -118,25 +125,37 @@ namespace Lab8.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
-                var user = CreateUser();
-
+                //var user = CreateUser();
+                var user = new ApplicationUser { Email = Input.Email, UserName = Input.UserName };
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
+                
+                var entity = await _context.Managers
+.FirstOrDefaultAsync(l => l.Email == Input.Email);
+                if (entity is null)
+                {
+
+                    var customer = new Customer
+                    {
+                        Name = Input.UserName,
+                        Email = Input.Email,
+                    };
+                    _context.Customers.Add(customer);
+                    _context.SaveChanges();
+
+                } else
+                {
+                    ModelState.AddModelError(string.Empty, "User is already a manager");
+                    return Page();
+                }
                 var result = await _userManager.CreateAsync(user, Input.Password);
 
                 if (result.Succeeded)
                 {
-                    var customer = new Customer
-                    {
-                        FirstName = Input.Email,
-                        LastName = Input.Email,
-                        Email = Input.Email,
-                        Password = Input.Email
-                    };
 
 
-                    _context.Customers.Add(customer);
-                    _context.SaveChanges();
+
+                    await _userManager.AddToRoleAsync(user, "Customer");
 
                     _logger.LogInformation("User created a new account with password.");
 

@@ -1,0 +1,77 @@
+﻿@model IEnumerable<Lab8.Models.DTO.ListingDTO>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+
+            <th>
+                @Html.DisplayNameFor(model => model.Condition)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Description)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Quantity)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CreatedBy)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Store)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Status)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+
+            <td>
+                @Html.DisplayFor(modelItem => item.Condition)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Quantity)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CreatedBy)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Store)
+            </td>
+            <td>
+           @if (item.Status == "Approved"){
+<a asp-action="Recieved_PickedUp" asp-route-id="item.ListingID">Set to recieved</a>
+} else if(item.Status == "Recieved")
+{
+<a asp-action="Recieved_PickedUp" asp-route-id="item.ListingID">Set to picked up</a> 
+} else if(item.Status == "Unapproved")
+{
+<a asp-action="Approve" asp-route-id="item.ListingID">Approve</a> 
+<a asp-action="Disapprove" asp-route-id="item.ListingID">Disapprove</a> 
+}
+            </td>
+            <td>
+
+                <a asp-action="Details" asp-route-id="@item.ListingID">Details</a> |
+
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

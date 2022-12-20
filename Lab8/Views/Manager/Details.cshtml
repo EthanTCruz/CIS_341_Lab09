@@ -1,0 +1,66 @@
+﻿@model Lab8.Models.DTO.ListingDTO
+
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>ManagerListingDTO</h4>
+    <hr />
+    <dl class="row">
+
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Condition)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Condition)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Description)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Description)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Quantity)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Quantity)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.CreatedBy)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.CreatedBy)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Store)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Store)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Status)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Status)
+        </dd>
+    </dl>
+</div>
+<div>
+@if (@Model.Status == "Approved"){
+<a asp-action="Recieved_PickedUp" asp-route-id="@Model?.ListingID">Set to recieved</a>
+} else if(@Model.Status == "Recieved")
+{
+<a asp-action="Recieved_PickedUp" asp-route-id="@Model?.ListingID">Set to picked up</a> 
+} else if(@Model.Status == "Unapproved")
+{
+<a asp-action="Approve" asp-route-id="@Model?.ListingID">Approve</a>
+<a asp-action="Disapprove" asp-route-id="@Model?.ListingID">Disapprove</a> 
+}
+
+    <a asp-action="Index">Back to List</a>
+</div>
