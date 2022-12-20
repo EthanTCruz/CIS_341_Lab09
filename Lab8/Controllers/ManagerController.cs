@@ -51,9 +51,11 @@ namespace Lab8.Controllers
 
 
 
-
-        // GET: Manager/Details/5
-        // Only allow users with the "Manager" role to access this action
+        /// <summary>
+        /// Displays the details for the specified listing.
+        /// </summary>
+        /// <param name="id">The ID of the listing to display.</param>
+        /// <returns>The listing details page.</returns>
         [Authorize(Roles = "Manager")]
         public async Task<IActionResult> Details(int? id)
         {
@@ -89,8 +91,10 @@ namespace Lab8.Controllers
 
 
 
-        // GET: Manager
-        // Only allow users with the "Manager" role to access this action
+        /// <summary>
+        /// Displays the unapproved listings for the current user's store.
+        /// </summary>
+        /// <returns>The unapproved listings page.</returns>
         [Authorize(Roles = "Manager")]
         public async Task<IActionResult> UnapprovedListings()
         {
@@ -139,14 +143,18 @@ namespace Lab8.Controllers
 
 
 
-        // GET: Manager
+        /// <summary>
+        /// Displays the approved listings for the current user's store.
+        /// </summary>
+        /// <returns>The approved listings page.</returns>
         [Authorize(Roles = "Manager")]
         public async Task<IActionResult> ApprovedListings()
         {
+            // Get the current user
             Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
-
             var user = await GetCurrentUserAsync();
 
+            // Load all listings for the current user's store from the database and include related entities
             List<Listing> listings = await _context.Listings
                 .Include(l => l.ClaimedBy)
                 .Include(l => l.Condition)
@@ -157,15 +165,17 @@ namespace Lab8.Controllers
                 .Where(predicate: l => l.Store.Manager.Email == user.Email)
                 .ToListAsync();
 
+            // Load the CreatedBy reference for each listing
             foreach (Listing listing in listings)
             {
-
                 await _context.Entry(listing).Reference(l => l.CreatedBy).LoadAsync();
             }
 
-            List<ListingDTO> listDTOs = new();
+            // Convert the listings to ListingDTO objects and add them to a list
+            List<ListingDTO> listDTOs = new List<ListingDTO>();
             foreach (Listing l in listings)
             {
+                // Only add listings with the "Approved" or "Received" status to the list
                 if (l.Status.Description == "Approved" || l.Status.Description == "Recieved")
                 {
                     ListingDTO listingDTO = ConvertToListingDTO(l);
@@ -173,10 +183,17 @@ namespace Lab8.Controllers
                 }
             }
 
+            // Return the list of ListingDTO objects to the view
             return View(listDTOs);
         }
 
 
+
+        /// <summary>
+        /// Approves the specified listing.
+        /// </summary>
+        /// <param name="id">The listing's unique identifier.</param>
+        /// <returns>The approved listings page.</returns>
         [Authorize(Roles = "Manager")]
         [HttpGet]
         public async Task<IActionResult> Approve(int id)
@@ -185,10 +202,11 @@ namespace Lab8.Controllers
             {
                 try
                 {
+                    // Get the current user
                     Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
-
                     var user = await GetCurrentUserAsync();
 
+                    // Load the listing from the database and include the Status entity
                     var entity = await _context.Listings
                         .Where(predicate: l => l.Store.Manager.Email == user.Email)
                         .Include(listing => listing.Status)
@@ -196,13 +214,12 @@ namespace Lab8.Controllers
 
                     if (entity != null)
                     {
-
+                        // If the status of the listing is "Unapproved" or "Disapproved", set it to "Approved" and save the changes to the database
                         if (entity.Status.Description == "Unapproved" || entity.Status.Description == "Disapproved")
                         {
                             entity.Status.Description = "Approved";
                             await _context.SaveChangesAsync();
                         }
-
                     }
                 }
                 catch (DbUpdateConcurrencyException)
@@ -221,6 +238,12 @@ namespace Lab8.Controllers
             return RedirectToAction(nameof(UnapprovedListings));
         }
 
+
+        /// <summary>
+        /// Disapproves the specified listing.
+        /// </summary>
+        /// <param name="id">The listing's unique identifier.</param>
+        /// <returns>The unapproved listings page.</returns>
         [Authorize(Roles = "Manager")]
         [HttpGet]
         public async Task<IActionResult> Disapprove(int id)
@@ -229,10 +252,11 @@ namespace Lab8.Controllers
             {
                 try
                 {
+                    // Get the current user
                     Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
-
                     var user = await GetCurrentUserAsync();
 
+                    // Get the listing with the matching ID and the store's manager email matching the current user's email
                     var entity = await _context.Listings
                         .Where(predicate: l => l.Store.Manager.Email == user.Email)
                         .Include(listing => listing.Status)
@@ -240,17 +264,12 @@ namespace Lab8.Controllers
 
                     if (entity != null)
                     {
-
+                        // Update the status to "Disapproved" if it is currently "Unapproved" or "Approved"
                         if (entity.Status.Description == "Unapproved" || entity.Status.Description == "Approved")
                         {
                             entity.Status.Description = "Disapproved";
                             await _context.SaveChangesAsync();
                         }
-
-
-
-
-
                     }
                 }
                 catch (DbUpdateConcurrencyException)
@@ -269,58 +288,73 @@ namespace Lab8.Controllers
             return RedirectToAction(nameof(UnapprovedListings));
         }
 
-
+        /// <summary>
+        /// Marks the specified listing as recieved or picked up.
+        /// </summary>
+        /// <param name="id">The listing's unique identifier.</param>
+        /// <param name="newStatus">The new status of the listing, either "Recieved" or "Picked Up".</param>
+        /// <returns>The approved listings page.</returns>
         [Authorize(Roles = "Manager")]
         [HttpGet]
         public async Task<IActionResult> Recieved_PickedUp(int id)
         {
+            // Validate the model state
             if (ModelState.IsValid)
             {
                 try
                 {
+                    // Define a method to get the current user
                     Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
 
+                    // Get the current user
                     var user = await GetCurrentUserAsync();
 
+                    // Get the listing with the specified ID and include the status
                     var entity = await _context.Listings
                         .Where(predicate: l => l.Store.Manager.Email == user.Email)
                         .Include(listing => listing.Status)
                         .FirstOrDefaultAsync(l => l.ListingID == id);
 
+                    // If the listing was found
                     if (entity != null)
                     {
-
+                        // If the listing is approved
                         if (entity.Status.Description == "Approved")
                         {
+                            // Change the status to "Recieved" and save the changes
                             entity.Status.Description = "Recieved";
                             await _context.SaveChangesAsync();
                         }
+                        // If the listing is recieved
                         else if (entity.Status.Description == "Recieved")
                         {
+                            // Change the status to "Picked Up" and save the changes
                             entity.Status.Description = "Picked Up";
                             await _context.SaveChangesAsync();
                         }
-
-
-
-
                     }
                 }
                 catch (DbUpdateConcurrencyException)
                 {
+                    // If the listing with the specified ID was not found
                     if (!_context.Listings.Any(e => e.ListingID == id))
                     {
+                        // Return a not found result
                         return NotFound();
                     }
+                    // Otherwise, throw the exception
                     else
                     {
                         throw;
                     }
                 }
+                // Redirect to the ApprovedListings action
                 return RedirectToAction(nameof(ApprovedListings));
             }
+            // Redirect to the ApprovedListings action
             return RedirectToAction(nameof(ApprovedListings));
         }
+
 
     }
 }

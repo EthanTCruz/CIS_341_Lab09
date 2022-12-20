@@ -11,12 +11,12 @@ namespace Lab8.Controllers
             // Check the user's role
             if (User.IsInRole("Manager"))
             {
-                // Redirect to the admin view
+                // Redirect to the Manager view
                 return RedirectToAction("UnapprovedListings", "Manager");
             }
             else
             {
-                // Redirect to the default view
+                // Redirect to the Customer view
                 return RedirectToAction("Index", "Customer");
             }
         }
