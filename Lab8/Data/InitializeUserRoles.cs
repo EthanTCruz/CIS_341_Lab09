@@ -16,17 +16,17 @@ namespace Lab8.Data
         {
             using (var context = new AuthenticationContext(serviceProvider.GetRequiredService<DbContextOptions<AuthenticationContext>>()))
             {
-                var ManagerID = await EnsureUser(serviceProvider, Password, "manager@gmail.com");
+                var ManagerID = await EnsureUser(serviceProvider, Password,"Manager", "manager@gmail.com");
                 await EnsureRole(serviceProvider, ManagerID, ManagerRole);
 
-                var CustomerID = await EnsureUser(serviceProvider, Password, "customer@gmail.com");
+                var CustomerID = await EnsureUser(serviceProvider, Password,"Customer", "customer@gmail.com");
                 await EnsureRole(serviceProvider, CustomerID, CustomerRole);
 
             }
         }
 
         // Check that user exists with provided email address --> create new user if none exists
-        private static async Task<string> EnsureUser(IServiceProvider serviceProvider, string userPw, string UserName)
+        private static async Task<string> EnsureUser(IServiceProvider serviceProvider, string userPw, string UserName,string Email)
         {
             // Access the UserManager service
             var userManager = serviceProvider.GetService<UserManager<ApplicationUser>>();
@@ -37,8 +37,8 @@ namespace Lab8.Data
                 if (user == null)
                 {
                     // Create new user if none exists
-                    user = new ApplicationUser { UserName = UserName, Email=UserName };
-                    var manager = new Manager { Name=user.Email,Email = user.Email };
+                    user = new ApplicationUser { UserName = UserName, Email=Email };
+                    var manager = new Manager { Name=user.UserName,Email = user.Email };
                     await userManager.CreateAsync(user, userPw);
                 }
 

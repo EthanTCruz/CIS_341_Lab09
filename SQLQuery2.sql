@@ -1,1 +1,1 @@
-﻿select C from Listings
+﻿select * from AspNetRoles

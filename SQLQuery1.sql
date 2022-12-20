@@ -1,1 +1,1 @@
-﻿select * from Listings
+﻿select * from AspNetUsers
