@@ -10,7 +10,7 @@ Customer Cedentials:
   Username: "Customer"
   Password: "Admin123!"
 
-(Once done with testing hit logout in the top right)
+(Once done with testing the customer hit logout in the top right)
 
  Manager Credentials: 
   Username: "Manager"
