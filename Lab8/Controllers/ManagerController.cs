@@ -23,13 +23,16 @@ namespace Lab8.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
 
 
+
         public ManagerController(CommunityStoreContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
             _userManager = userManager;
 
-
         }
+
+
+
 
         public ListingDTO ConvertToListingDTO(Listing listing)
         {

@@ -182,7 +182,7 @@ namespace Lab8.Controllers
                 .Include(l => l.Status)
                 .Include(l => l.Store)
                 .Include(l => l.Type)
-                .Where(l => l.Status.Description == "Approved" || l.Status.Description == "Recieved")
+                .Where(l => l.Status.Description == "Approved" || l.Status.Description == "Recieved" && (l.ClaimedBy == null || l.ClaimedBy.Name != "Unclaimed"))
                 .ToListAsync();
 
             // Load the createdBy references for each listing
@@ -220,7 +220,6 @@ namespace Lab8.Controllers
         /// <returns>The details page for the listing, or a not found page if the listing is not found.</returns>
         [Authorize(Roles = "Customer")]
         [HttpGet]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Claim_Unclaim(int id)
         {
             // Return if the model state is invalid
