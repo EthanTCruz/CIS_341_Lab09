@@ -1,6 +1,85 @@
 ﻿/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
 for details on configuring this project to bundle and minify static web assets. */
 
+.navbar {
+    background-color: #333;
+}
+
+    .navbar .nav-link {
+        color: #fff;
+        font-size: 18px;
+    }
+
+        .navbar .nav-link:hover,
+        .navbar .nav-link:focus {
+            color: #ccc;
+        }
+
+        .navbar .nav-link.active {
+            color: #fff;
+            background-color: #1b6ec2;
+        }
+
+.footer {
+    background-color: #333;
+    color: #fff;
+    font-size: 14px;
+}
+
+a {
+    color: #0077cc;
+    text-decoration: none;
+}
+
+    a:hover {
+        color: #0066b2;
+    }
+
+    a:active {
+        color: #005399;
+    }
+
+
+.container {
+    margin: 30px auto;
+    max-width: 1200px;
+    padding: 0 15px;
+}
+
+
+    .footer a {
+        color: #ccc;
+    }
+
+        .footer a:hover {
+            color: #fff;
+        }
+
+
+.btn-primary:hover,
+.btn-primary:focus {
+    color: #fff;
+    background-color: #0066b2;
+    border-color: #0066b2;
+}
+
+.btn-primary:active {
+    color: #fff;
+    background-color: #005399;
+    border-color: #005399;
+}
+
+button.accept-policy:hover,
+button.accept-policy:focus {
+    color: #333;
+    background-color: #e5e5e5;
+}
+
+button.accept-policy:active {
+    color: #fff;
+    background-color: #ccc;
+}
+
 
 a.navbar-brand {
     white-space: normal;
